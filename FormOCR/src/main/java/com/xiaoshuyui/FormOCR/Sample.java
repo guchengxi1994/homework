@@ -14,6 +14,8 @@ public class Sample {
     public static final String SECRET_KEY = "zOTzSqAm6x90i43MMYzDQXVwqyNOlxLw";
 
     public static void main(String[] args) {
+
+        String request_id = "";
         // 初始化一个AipOcr
         AipOcr client = new AipOcr(APP_ID, API_KEY, SECRET_KEY);
         HashMap<String, String> options = new HashMap<String, String>();
@@ -48,7 +50,7 @@ public class Sample {
 
         net.sf.json.JSONArray result = jsonObject.getJSONArray("result");
 
-        String request_id = "";
+
 
         if (null!=result && result.size()>0){
 
@@ -57,6 +59,13 @@ public class Sample {
         }
 
         System.out.println(request_id);
+
+
+        new Thread(new Runnable() {
+            public void run() {
+
+            }
+        }).start();
 
 
         JSONObject res2 = client.tableResultGet(request_id,options);
