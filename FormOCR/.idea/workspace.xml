@@ -2,17 +2,26 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5b024439-cdf3-434e-bdff-acb28e4b960e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/xiaoshuyui/FormOCR/GetMsg.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FormOCR.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/xiaoshuyui/FormOCR/Sample.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xiaoshuyui/FormOCR/Sample.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/xiaoshuyui/FormOCR/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/xiaoshuyui/FormOCR/Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/xiaoshuyui/FormOCR/Sample.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/xiaoshuyui/FormOCR/Sample.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/xiaoshuyui/FormOCR/Test.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/xiaoshuyui/FormOCR/Test.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../readme.txt" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -26,6 +35,55 @@
     <property name="ignore.virus.scanning.warn.message" value="true" />
     <property name="settings.editor.selected.configurable" value="preferences.keymap" />
   </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Application.Sample">
+    <configuration name="Sample" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.xiaoshuyui.FormOCR.Sample" />
+      <module name="FormOCR" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.xiaoshuyui.FormOCR.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.xiaoshuyui.FormOCR.Test" />
+      <module name="FormOCR" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.xiaoshuyui.FormOCR.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Sample" />
+        <item itemvalue="Application.Test" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="5b024439-cdf3-434e-bdff-acb28e4b960e" name="Default Changelist" comment="" />
@@ -33,11 +91,34 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1574047601606</updated>
-      <workItem from="1574047607856" duration="238000" />
+      <workItem from="1574047607856" duration="5585000" />
     </task>
+    <task id="LOCAL-00001" summary="multi thread">
+      <created>1574047869381</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1574047869382</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="multi thread" />
+    <option name="LAST_COMMIT_MESSAGE" value="multi thread" />
   </component>
 </project>

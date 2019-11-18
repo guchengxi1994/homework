@@ -12,7 +12,7 @@ public class Test {
     public static final String SECRET_KEY = "zOTzSqAm6x90i43MMYzDQXVwqyNOlxLw";
 
     public static void main(String[] args) {
-        String requestid = "17160116_1220121";
+        String requestid = "17160116_1220836";
         AipOcr client = new AipOcr(APP_ID, API_KEY, SECRET_KEY);
         HashMap<String, String> options = new HashMap<String, String>();
         options.put("result_type", "json");
@@ -22,6 +22,11 @@ public class Test {
         client.setSocketTimeoutInMillis(60000);
 
         JSONObject res2 = client.tableResultGet(requestid,options);
-        System.out.println(res2.toString(2));
+
+        JSONObject result = res2.getJSONObject("result");
+
+        System.out.println(result.get("ret_msg"));
+
+        System.out.println(result.toString(2));
     }
 }

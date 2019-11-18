@@ -13,7 +13,7 @@ public class Sample {
     public static final String API_KEY = "4Gx0bItZyFX7YGt6mz7KZ3Sc";
     public static final String SECRET_KEY = "zOTzSqAm6x90i43MMYzDQXVwqyNOlxLw";
 
-    public static void main(String[] args) {
+    public static void main(String[] args)  {
 
         String request_id = "";
         // 初始化一个AipOcr
@@ -37,7 +37,7 @@ public class Sample {
 //        System.setProperty("aip.log4j.conf", "path/to/your/log4j.properties");
 
         // 调用接口
-        String path = "d:\\Desktop\\微信图片_20191117101144.png";
+        String path = "C:\\Users\\admin\\Desktop\\微信图片_20191118113304.png";
         JSONObject res = client.tableRecognitionAsync(path, options);
 
 
@@ -58,19 +58,22 @@ public class Sample {
 
         }
 
-        System.out.println(request_id);
-
-
-        new Thread(new Runnable() {
-            public void run() {
-
-            }
-        }).start();
-
+//        System.out.println(request_id);
 
         JSONObject res2 = client.tableResultGet(request_id,options);
-        System.out.println(res2.toString(2));
+//        System.out.println(res2.toString(2));
 
+        GetMsg getMsg = new GetMsg(client,request_id,options);
+
+        getMsg.start();
+
+        try {
+            getMsg.join();
+            String jsonData = getMsg.getJsonData();
+            System.out.println(jsonData);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
 
     }
