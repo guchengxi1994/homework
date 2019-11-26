@@ -1,4 +1,4 @@
-package com.xiaoshuyui.kaidian;
+package com.xiaoshuyui.kaidian.initializer;
 
 import com.xiaoshuyui.kaidian.handler.NettyServerHandler;
 import io.netty.channel.ChannelInitializer;
