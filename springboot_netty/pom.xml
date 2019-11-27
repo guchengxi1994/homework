@@ -46,6 +46,13 @@
                     <artifactId>spring-boot-devtools</artifactId>
                 </dependency>
 
+        <!--这里使用jackson反序列字节码-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.7</version>
+        </dependency>
+
 
         <!--        <dependency>-->
         <!--            <groupId>org.springframework.boot</groupId>-->

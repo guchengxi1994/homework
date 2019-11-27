@@ -26,7 +26,7 @@ public class NettyClient {
 //            log.info("客户端成功....");
             //发送消息
             System.out.println("客户端成功....");
-            future.channel().writeAndFlush("你好啊");
+            future.channel().writeAndFlush("你好啊.......................................................................................");
             // 等待连接被关闭
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
