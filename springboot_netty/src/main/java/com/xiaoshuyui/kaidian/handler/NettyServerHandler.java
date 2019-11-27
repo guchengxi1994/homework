@@ -1,34 +1,43 @@
 package com.xiaoshuyui.kaidian.handler;
 
 import com.alibaba.fastjson.JSON;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import com.xiaoshuyui.kaidian.entity.GlobalGroup;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.net.InetSocketAddress;
 import java.util.Map;
+
 
 
 @Slf4j
 public class NettyServerHandler extends SimpleChannelInboundHandler<Object> {
 
     private Logger log = LoggerFactory.getLogger(NettyServerHandler.class);
-    ;
+    private WebSocketServerHandshaker handshaker;
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
 //        super.channelActive(ctx);
 //        log.info("aaa");
         log.info("系统激活");
+        GlobalGroup.group.add(ctx.channel());
+
+        log.info("客户端与服务端连接开启：" + ctx.channel().remoteAddress().toString());
 //        System.out.println("aaa");
     }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+//        super.channelInactive(ctx);
+        GlobalGroup.group.remove(ctx.channel());
+        System.out.println("客户端与服务端连接关闭：" + ctx.channel().remoteAddress().toString());
+    }
+
+
 
 
     @Override
