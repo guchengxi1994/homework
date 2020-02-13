@@ -45,21 +45,24 @@ def findpeaks(data, spacing=1, limit=None):
 
 
 
-i = cv2.imread("D:\\homework\\homework\\house\\test211.jpg")
+i = cv2.imread("D:\\homework\\homework\\house\\weld333.jpg")
 gray = cv2.cvtColor(i, cv2.COLOR_BGR2GRAY)
 
 h,w = gray.shape
 
 ret2,th2 = cv2.threshold(gray,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
-kernel  = np.zeros((3,99),dtype = np.float32)
+kernel  = np.ones((3,99),dtype = np.float32)
 
-kernel[1,:] = 1
+# kernel[1,:] = 1
 
 kernel = kernel/np.sum(kernel)
 
 # print(kernel)
 dst = cv2.filter2D(gray,-1,kernel)
+
+dst = cv2.filter2D(dst,-1,kernel)
+dst = cv2.filter2D(dst,-1,kernel)
 
 dst = np.array(dst,dtype = np.uint8)
 
