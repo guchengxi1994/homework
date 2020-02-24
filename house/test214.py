@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 import copy
 
-img = cv2.imread("D:\\homework\\homework\\house\\ori.jpg")
+img = cv2.imread("D:\\homework\\homework\\house\\219_22_ori.jpg")
 
 img1 = copy.deepcopy(img)
 
@@ -47,6 +47,8 @@ print(m3)
 
 print(min(m1,m2,m3))
 
+thres = min(m1,m2,m3)
+
 # clus[clus]
 
 # m1 = np.max()
@@ -57,7 +59,7 @@ print(min(m1,m2,m3))
 # # img[img>=63 && img<=220] = 127
 # img[img>114] = 255
 
-img[img>75] = 0
+img[img>thres] = 0
 img[img!=0] = 1
 
 img2 = img1*img
@@ -134,7 +136,7 @@ cv2.imwrite('D:\\homework\\homework\\house\\close.jpg', img3)
 aa[aa>0] = 255
 aa = np.uint8(aa)
 # print(aa)
-cv2.imwrite('D:\\homework\\homework\\house\\aa.jpg', aa)
+cv2.imwrite('D:\\homework\\homework\\house\\aa219_22.jpg', aa)
 
 cv2.imwrite('D:\\homework\\homework\\house\\img1.jpg',img1)
 
@@ -143,5 +145,5 @@ cv2.imwrite('D:\\homework\\homework\\house\\img1.jpg',img1)
 
 
 
-plt.hist(img1.ravel(), 256, [1, 240])
-plt.show()
+# plt.hist(img1.ravel(), 256, [1, 240])
+# plt.show()
