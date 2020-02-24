@@ -39,6 +39,9 @@ for m,n in matches:
 
 img5 = cv2.drawMatchesKnn(img1,kp1,img2,kp2,good,None,flags=2)
 
+for i in good:
+    print(i[0])
+
 cv2.imwrite("D:\\homework\\homework\\house\\11\\img5.jpg",img5)
 
 # cv2.imshow("BFmatch", img5)
