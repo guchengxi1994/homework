@@ -20,15 +20,15 @@ def preFix(img1,img2):
 
 
 
-template  = cv2.imread('D:\\homework\\homework\\house\\11\\tem.jpg')
+template  = cv2.imread('D:\\testAlg\\homework\\house\\11\\tem.jpg')
 # template = cv2.cvtColor(template,cv2.COLOR_BGR2GRAY)
 # print(template.shape)
-img = cv2.imread("D:\\homework\\homework\\house\\11\\6-1.jpg")
+img = cv2.imread("D:\\testAlg\\homework\\house\\11\\6-1.jpg")
 # img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 # print(img.shape)
 h, w = template.shape[:2]
 
-img2 = cv2.imread("D:\\homework\\homework\\house\\11\\5-6.jpg")
+img2 = cv2.imread("D:\\testAlg\\homework\\house\\11\\5-6.jpg")
 
 # img,img2 = preFix(img,img2)
 
@@ -84,10 +84,24 @@ print(rightImg.shape)
 res = np.concatenate( (leftImg,rightImg),axis=1)  
 
 
+
+tem = np.zeros(res.shape)
+
+tem[:,left_top2[0]-10:left_top2[0]+10] = 255
+
+tem = np.array(tem,dtype=np.uint8)
+
+# print(tem.shape)
+
+
 # res = np.zeros((max(img.shape[0],img2.shape[0]),img.shape[1]+img2.shape[1]))
 
 # res[0:img2.shape[0],0:left_top2[0]] = img2[:,0:left_top2[0]]
-cv2.imwrite("D:\\homework\\homework\\house\\11\\212121212.jpg",res)
+cv2.imwrite("D:\\testAlg\\homework\\house\\11\\212121212.jpg",res)
+
+dd = cv2.inpaint(res[:,:,0],tem[:,:,0],3,cv2.INPAINT_TELEA)
+
+cv2.imwrite("D:\\testAlg\\homework\\house\\11\\12121212.jpg",dd)
 
 
 # cv2.rectangle(img, left_top, right_bottom, 255, 2)  # 画出矩形位置
