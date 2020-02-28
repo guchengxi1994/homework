@@ -127,8 +127,8 @@ if __name__ == '__main__':
     from skimage.data import astronaut
     from skimage.io import imsave,imread
     # im = astronaut()
-    # im = imread('D:\\testALg\\homework\\house\\227\\1-2weld.jpg')
-    im = imread('D:\\testALg\\homework\\house\\227\\1122.jpg')
+    im = imread('D:\\homework\\homework\\house\\227\\1-2weld.jpg')
+    # im = imread('D:\\testALg\\homework\\house\\227\\1122.jpg')
     im = im / 255.0
     im = xdog(im, binarize=True, k=20)
 
@@ -140,5 +140,5 @@ if __name__ == '__main__':
 
 
 
-    imsave('out.png', lcc)
+    imsave('out1.png', lcc)
 
