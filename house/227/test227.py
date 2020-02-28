@@ -31,13 +31,15 @@ def FT(src):
     salient_map = salient_map/np.max(salient_map)*255
     salient_map = np.array(salient_map,dtype=np.uint8)
 
+    salient_map = 255 - salient_map
+
 
     
     # xs = np.reshape(salient_map,(-1,1))
     # xs = np.reshape(xs,(1,len(xs)))
 
-    plt.hist(salient_map.ravel(), 256, [0, 256])
-    plt.show()
+    # plt.hist(salient_map.ravel(), 256, [0, 256])
+    # plt.show()
 
 
 
@@ -62,12 +64,12 @@ def FT(src):
 
 if __name__ == "__main__":
     
-    i = cv2.imread(image_ROOT+os.sep+"4-5.jpg")
-    # i = cv2.imread(BASE_DIR+os.sep+"1-2weld.jpg")
+    # i = cv2.imread(image_ROOT+os.sep+"4-5.jpg")
+    i = cv2.imread(BASE_DIR+os.sep+"1-2weld.jpg")
     
 
     # i = i.astype(np.uint8)
 
     i2 = FT(i)
 
-    cv2.imwrite(BASE_DIR+os.sep+"111.jpg",i2)
+    cv2.imwrite(BASE_DIR+os.sep+"1122.jpg",i2)
