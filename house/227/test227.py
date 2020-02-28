@@ -62,8 +62,8 @@ def FT(src):
 
 if __name__ == "__main__":
     
-    i = cv2.imread(image_ROOT+os.sep+"4-5.jpg")
-    # i = cv2.imread(BASE_DIR+os.sep+"1-2weld.jpg")
+    # i = cv2.imread(image_ROOT+os.sep+"1-2.jpg")
+    i = cv2.imread(BASE_DIR+os.sep+"1-2weld.jpg")
     
 
     # i = i.astype(np.uint8)
