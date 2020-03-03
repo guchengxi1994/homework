@@ -9,7 +9,8 @@ print(ppd)
 imread = "cv2.imread"
 imshow = "cv2.imshow"
 
-x = eval(imread)('D:\\DefectDemo\\\defectImages\\5LDN200-00011.jpg')
+x = eval(imread)('D:\\DefectDemo\\defectImages\\5LDN200-00011.jpg')
+print(type(x))
 
 eval(imshow)('test',x)
 # # x = methodcaller(imread)
