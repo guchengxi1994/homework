@@ -98,7 +98,7 @@ class ImgAugemention():
                     rotated_img = self.flip_img(img, f)
                     # 写入图像
                     cv2.imwrite(img_save_path + n + "_" + str(f) + "flip.jpg", rotated_img)
-                    print("log: [%sd] %s is processed." % (f, img))
+                    # print("log: [%sd] %s is processed." % (f, img))
                     xml_url = img_name.split('.')[0] + '.xml'
                     xml_path = os.path.join(xmls_path, xml_url)
                     try:
@@ -153,7 +153,7 @@ class ImgAugemention():
                     rotated_img = self.rotate_image(img, angle)
                     # 写入图像
                     cv2.imwrite(img_save_path + n + "_" + str(angle) + "d.jpg", rotated_img)
-                    print("log: [%sd] %s is processed." % (angle, img))
+                    # print("log: [%sd] %s is processed." % (angle, img))
                     xml_url = img_name.split('.')[0] + '.xml'
                     xml_path = os.path.join(xmls_path, xml_url)
                     try:
