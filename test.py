@@ -1,3 +1,12 @@
+'''
+@lanhuage: python
+@Descripttion: 
+@version: beta
+@Author: xiaoshuyui
+@Date: 2020-03-11 16:51:34
+@LastEditors: xiaoshuyui
+@LastEditTime: 2020-03-17 17:01:30
+'''
 
 class Mylist:
     def __init__(self,*params):
@@ -10,7 +19,9 @@ class Mylist:
             return list(set(self.lis).difference(set(other.lis)))
 
     def __add__(self,other):
-        return self.lis + Mylist(other).lis
+        if not isinstance(other,Mylist):
+            other = Mylist(other)
+        return self.lis + other.lis
 
 
     def __str__(self):
