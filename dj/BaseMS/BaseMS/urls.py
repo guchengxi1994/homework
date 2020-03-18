@@ -5,7 +5,7 @@
 @Author: xiaoshuyui
 @Date: 2020-03-18 10:08:28
 @LastEditors: xiaoshuyui
-@LastEditTime: 2020-03-18 10:18:02
+@LastEditTime: 2020-03-18 15:16:10
 '''
 """BaseMS URL Configuration
 
@@ -23,11 +23,26 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path ,re_path
 import xadmin
+from django.conf import settings
+from django.conf.urls.static import serve,static
+import BaseApp_1.views as BaseViews
+
+# import BaseApp_1.views as views
+# from BaseApp_1 import views
+
+from django.conf.urls import handler400, handler403, handler404, handler500
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
     path('xadmin/',xadmin.site.urls),
 
+    re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
 ]
+
+handler400 = BaseViews.bad_request
+handler403 = BaseViews.permission_denied
+handler404 = BaseViews.page_not_found
+handler500 = BaseViews.server_error
+

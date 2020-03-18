@@ -5,7 +5,7 @@
 @Author: xiaoshuyui
 @Date: 2020-03-18 10:31:45
 @LastEditors: xiaoshuyui
-@LastEditTime: 2020-03-18 11:24:41
+@LastEditTime: 2020-03-18 13:36:11
 '''
 from django.db import models
 
@@ -18,3 +18,6 @@ class User(models.Model):
     class Meta:
         verbose_name = '成员'
         verbose_name_plural=verbose_name
+
+    def __str__(self):
+        return self.username
