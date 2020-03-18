@@ -5,7 +5,7 @@
 @Author: xiaoshuyui
 @Date: 2020-03-18 10:31:45
 @LastEditors: xiaoshuyui
-@LastEditTime: 2020-03-18 16:05:14
+@LastEditTime: 2020-03-18 17:16:57
 '''
 from django.contrib import admin
 from xadmin import views
@@ -30,6 +30,24 @@ class UserAdmin(object):
                  'password',**{"style":"display:None"}
                  ),
     )
+xadmin.site.register(User,UserAdmin)
+
+
+
+# from TaskMSApp.models import Task 
+# class TaskAdmin(object):
+#     # pass 
+#     list_display = ['taskname','comment']
+#     search_fields=['taskname']
+#     model_icon = 'fa fa-user'
+#     list_editable = ['comment']
+
+# xadmin.site.register(Task,TaskAdmin)
+
+
+
+
+
 
 
 class GlobalSettings(object):
@@ -39,7 +57,7 @@ class GlobalSettings(object):
 xadmin.site.register(views.CommAdminView,GlobalSettings)
 
 
-xadmin.site.register(User,UserAdmin)
+
 
 class BaseSetting(object):
     enable_themes = True    #添加主题选择功能

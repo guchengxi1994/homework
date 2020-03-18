@@ -25,7 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '@x2=v@o_+_+hh7bfeas_$t=r$qnj85=xd_c6li!t%b36e-dqx2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'xadmin',
     'crispy_forms',
     'BaseApp_1',
+    'TaskMSApp',
     
 ]
 
