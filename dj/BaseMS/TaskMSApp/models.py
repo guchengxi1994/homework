@@ -5,7 +5,7 @@
 @Author: xiaoshuyui
 @Date: 2020-03-18 17:02:44
 @LastEditors: xiaoshuyui
-@LastEditTime: 2020-03-18 17:23:55
+@LastEditTime: 2020-03-18 17:40:27
 '''
 from django.db import models
 
@@ -15,7 +15,8 @@ class Task(models.Model):
     taskname = models.CharField(max_length=20,verbose_name='任务名',unique=True)
     comment = models.CharField(max_length=200,verbose_name='评价',default='123456')
     starter = models.CharField(max_length=20,verbose_name='发起人',default='')
-    worker = models.CharField(max_length=20,verbose_name='指派工人',default='')
+    worker = models.CharField(max_length=20,verbose_name='操作员',default='')
+    state = models.CharField(max_length=20,verbose_name='状态',default='')
 
     class Meta:
         verbose_name = '任务'

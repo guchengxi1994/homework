@@ -5,7 +5,7 @@
 @Author: xiaoshuyui
 @Date: 2020-03-18 17:02:44
 @LastEditors: xiaoshuyui
-@LastEditTime: 2020-03-18 17:21:38
+@LastEditTime: 2020-03-18 17:42:16
 '''
 from django.contrib import admin
 from xadmin import views
@@ -19,10 +19,10 @@ from xadmin.layout import Fieldset
 
 class TaskAdmin(object):
     # pass 
-    list_display = ['taskname','comment']
-    search_fields=['taskname']
+    list_display = ['taskname','starter','worker','state']
+    search_fields=['taskname','starter','worker','state']
     model_icon = 'fa fa-book'
-    list_editable = ['comment']
+    list_editable = ['worker','comment']
 
 xadmin.site.register(Task,TaskAdmin)
 
