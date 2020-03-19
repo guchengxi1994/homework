@@ -5,7 +5,7 @@
 @Author: xiaoshuyui
 @Date: 2020-03-18 17:02:44
 @LastEditors: xiaoshuyui
-@LastEditTime: 2020-03-19 13:11:04
+@LastEditTime: 2020-03-19 17:22:10
 '''
 from django.db import models
 from BaseApp_1.models import User,Worker
@@ -28,6 +28,10 @@ class Task(models.Model):
     worker = models.ForeignKey(Worker,on_delete=models.CASCADE,related_name='worker_uuid',verbose_name='操作员')
     state = models.ForeignKey(StateCode,on_delete=models.CASCADE,related_name='statecode_id',default=1,verbose_name='完成状态')
     tuuid = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
+
+    startTime = models.DateTimeField(auto_now=True,verbose_name='开始时间')
+    endTime = models.DateTimeField(auto_now=False,verbose_name='结束时间',blank=True,editable=False, null=True)
+    primary = models.IntegerField(verbose_name='优先级',default=1,max_length=3)
     # state = models.CharField(max_length=20,verbose_name='状态',default='0')
 
     class Meta:

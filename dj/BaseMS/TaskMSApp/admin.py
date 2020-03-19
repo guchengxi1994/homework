@@ -5,7 +5,7 @@
 @Author: xiaoshuyui
 @Date: 2020-03-18 17:02:44
 @LastEditors: xiaoshuyui
-@LastEditTime: 2020-03-19 13:34:01
+@LastEditTime: 2020-03-19 17:21:19
 '''
 from django.contrib import admin
 from xadmin import views
@@ -15,6 +15,7 @@ import xadmin
 from .models import Task ,StateCode
 from xadmin.layout import Fieldset
 from xadmin.plugins.actions import BaseActionView
+from BaseApp_1.models import Worker
 
 # Register your models here.
 
@@ -82,6 +83,7 @@ class DelayAction(BaseActionView):
 
 
 class TaskAdmin(object):
+    
     # pass 
     list_display = ['taskname','starter','worker','state']
     search_fields=['taskname',]
@@ -91,16 +93,51 @@ class TaskAdmin(object):
     actions = [CompleteAction,DelayAction,]
 
     def formfield_for_dbfield(self, db_field, **kwargs):
-        from BaseApp_1.models import Worker
+        
         if db_field.name == 'worker':
             # qs1 = Worker.objects.filter(state = 1)
             # ids = []
             # for i in qs1:
             #     ids.append(i['wuuid'])
             
-            kwargs['queryset'] = Worker.objects.filter(state = 1)
+            kwargs['queryset'] = Worker.objects.filter().exclude(state = 3)
         
         return db_field.formfield(**dict(**kwargs))
+
+    # def get_form(self,request,obj=None, **kwargs):
+    #     self.exclude = ['endTime']
+    #     return super(TaskAdmin, self).get_form(request, obj, **kwargs)
+
+    
+    def post(self,request,*args,**kwargs):
+        # print(request.POST)
+
+        x = request.POST
+        # print(x.get('action'))
+
+        if x.get('action') is not None:
+            return super(TaskAdmin,self).post(request,args,kwargs)
+        else:
+
+            # print(x['taskname'])
+            # print(x['worker'])
+
+            tmp = Task.objects.filter(taskname=x['taskname'])
+            # tmp2 = Worker.objects.filter(wuuid=x['worker'])
+            # print(tmp2)
+            if tmp.exists():
+                # print(True)
+                pass 
+            else:
+                # if x['worker'] is not None and x['worker']!="":
+                # print("aaaaaaaaaaa")
+                Worker.objects.filter(wuuid=x['worker']).update(state = 2)
+            
+            return super(TaskAdmin,self).post(request,args,kwargs)
+
+        
+
+        
 
 
     # def queryset(self):
