@@ -5,7 +5,7 @@
 @Author: xiaoshuyui
 @Date: 2020-03-18 17:02:44
 @LastEditors: xiaoshuyui
-@LastEditTime: 2020-03-19 17:21:19
+@LastEditTime: 2020-03-20 11:28:45
 '''
 from django.contrib import admin
 from xadmin import views
@@ -16,6 +16,8 @@ from .models import Task ,StateCode
 from xadmin.layout import Fieldset
 from xadmin.plugins.actions import BaseActionView
 from BaseApp_1.models import Worker
+from django.db.models import Q
+import datetime
 
 # Register your models here.
 
@@ -55,7 +57,22 @@ class CompleteAction(BaseActionView):
             # s = StateCode
             # s.
             obj.state =  StateCode(2)    # 重置score为0
-            obj.save()
+            taskName = obj.taskname
+            tuuid = obj.tuuid
+            # print(tuuid)
+            workUUID = obj.worker.wuuid
+            Task.objects.filter(tuuid=tuuid).update(endTime = str(datetime.datetime.now()))
+            Task.objects.filter(tuuid=tuuid).update(state = 2)
+            qs = Task.objects.filter(worker=workUUID).exclude(state = 2)
+            # print(len(qs))
+            if len(qs)>1:
+                pass 
+            else:
+                Worker.objects.filter(wuuid=workUUID).update(state = 1)
+            # print(qs)
+            # obj.save()
+
+            # print(obj.worker.wuuid)
         # return HttpResponse
         return None  # 返回的url地址
 
@@ -99,14 +116,35 @@ class TaskAdmin(object):
             # ids = []
             # for i in qs1:
             #     ids.append(i['wuuid'])
+            qs = Worker.objects.filter().exclude(state = 2)
+            # if qs.exists():
+            #     for i in qs:
+            #         i.workername = i.workername + str(i.state)
+            #         print(i.workername)
             
-            kwargs['queryset'] = Worker.objects.filter().exclude(state = 3)
+            kwargs['queryset'] = qs
+            # print(kwargs)
+            # print(Worker.objects.filter().exclude(state = 3))
         
         return db_field.formfield(**dict(**kwargs))
 
-    # def get_form(self,request,obj=None, **kwargs):
-    #     self.exclude = ['endTime']
-    #     return super(TaskAdmin, self).get_form(request, obj, **kwargs)
+
+        # if db_field.name == 'primary':
+        #     # print("INNNNNNNNNNNNNNNNN")
+        #     kwargs['choices'] = (
+        #         (1, 1),
+        #         (2, 2),
+        #         (3,3),
+        #     )
+        #     # attrs = self.get_field_attrs(db_field, **kwargs)
+        #     return db_field.formfield(**dict( **kwargs))
+
+        # else:
+        #     return db_field.formfield(**dict(**kwargs))
+
+
+
+
 
     
     def post(self,request,*args,**kwargs):
@@ -131,7 +169,7 @@ class TaskAdmin(object):
             else:
                 # if x['worker'] is not None and x['worker']!="":
                 # print("aaaaaaaaaaa")
-                Worker.objects.filter(wuuid=x['worker']).update(state = 2)
+                Worker.objects.filter(wuuid=x['worker']).update(state = 3)
             
             return super(TaskAdmin,self).post(request,args,kwargs)
 

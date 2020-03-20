@@ -5,7 +5,7 @@
 @Author: xiaoshuyui
 @Date: 2020-03-18 10:31:45
 @LastEditors: xiaoshuyui
-@LastEditTime: 2020-03-19 09:43:43
+@LastEditTime: 2020-03-20 11:30:08
 '''
 from django.contrib import admin
 from xadmin import views
@@ -40,9 +40,15 @@ xadmin.site.register(User,UserAdmin)
 
 
 class WorkerAdmin(object):
-    list_display = ['workername','workerID']
-    search_fields=['workerID']
+    list_display = ['workername','workerID','state']
+    search_fields=['workerID','state']
     model_icon = 'fa fa-users '
+
+    # def delete_models(self):
+    #     obj = self.obj
+    #     print(obj)
+    #     obj.delete()
+
     # list_editable = ['comment']
     # actions = [VerifyAction]
 xadmin.site.register(Worker,WorkerAdmin)

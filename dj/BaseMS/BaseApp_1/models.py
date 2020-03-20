@@ -5,10 +5,10 @@
 @Author: xiaoshuyui
 @Date: 2020-03-18 10:31:45
 @LastEditors: xiaoshuyui
-@LastEditTime: 2020-03-19 12:46:01
+@LastEditTime: 2020-03-20 11:15:18
 '''
 from django.db import models
-import uuid
+import uuid,random
 
 # Create your models here.
 
@@ -34,12 +34,13 @@ class WorkerState(models.Model):
 
 
 class Worker(models.Model):
+    wuuid = models.AutoField(primary_key=True,editable=False,verbose_name='唯一标识')
     workername = models.CharField(max_length=20,verbose_name='姓名')
-    workerID = models.CharField(max_length=100,verbose_name='身份认证',unique=True)
+    workerID = models.CharField(max_length=100,verbose_name='身份认证')
     jointime = models.DateField(auto_now=True,verbose_name='加入时间')
     # state = models.CharField(max_length=20,verbose_name='工作中')
-    state = models.ForeignKey(WorkerState,on_delete=models.CASCADE,related_name='workerstate_id',default=1)
-    wuuid = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
+    state = models.ForeignKey(WorkerState,on_delete=models.CASCADE,related_name='workerstate_id',default=1,verbose_name='状态')
+    # wuuid = models.CharField(max_length=100,primary_key=True, default=uuid.uuid5(uuid.NAMESPACE_DNS, str(uuid.uuid1()) + str(random.random())), editable=False,verbose_name='唯一标识')
 
 
     class Meta:
