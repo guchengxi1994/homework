@@ -5,7 +5,7 @@
 @Author: xiaoshuyui
 @Date: 2020-03-18 10:31:45
 @LastEditors: xiaoshuyui
-@LastEditTime: 2020-03-20 11:15:18
+@LastEditTime: 2020-03-24 09:48:55
 '''
 from django.db import models
 import uuid,random
@@ -17,7 +17,7 @@ class User(models.Model):
     comment = models.CharField(max_length=200,verbose_name='评价',default='123456')
 
     class Meta:
-        verbose_name = '成员'
+        verbose_name = '管理者'
         verbose_name_plural=verbose_name
 
     def __str__(self):
