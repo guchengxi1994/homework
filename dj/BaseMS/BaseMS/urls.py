@@ -5,7 +5,7 @@
 @Author: xiaoshuyui
 @Date: 2020-03-18 10:08:28
 @LastEditors: xiaoshuyui
-@LastEditTime: 2020-03-18 15:16:10
+@LastEditTime: 2020-03-24 09:16:59
 '''
 """BaseMS URL Configuration
 
@@ -27,7 +27,7 @@ from django.urls import path ,re_path
 import xadmin
 from django.conf import settings
 from django.conf.urls.static import serve,static
-import BaseApp_1.views as BaseViews
+import baseapp_1.views as BaseViews
 
 # import BaseApp_1.views as views
 # from BaseApp_1 import views

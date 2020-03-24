@@ -5,7 +5,7 @@
 @Author: xiaoshuyui
 @Date: 2020-03-18 17:02:44
 @LastEditors: xiaoshuyui
-@LastEditTime: 2020-03-20 11:28:45
+@LastEditTime: 2020-03-24 09:18:54
 '''
 from django.contrib import admin
 from xadmin import views
@@ -15,7 +15,7 @@ import xadmin
 from .models import Task ,StateCode
 from xadmin.layout import Fieldset
 from xadmin.plugins.actions import BaseActionView
-from BaseApp_1.models import Worker
+from baseapp_1.models import Worker
 from django.db.models import Q
 import datetime
 

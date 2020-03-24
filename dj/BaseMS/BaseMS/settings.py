@@ -41,8 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'xadmin',
     'crispy_forms',
-    'BaseApp_1',
-    'TaskMSApp',
+    'baseapp_1',
+    'taskmsapp',
+    'reversion',
+    # 'xadmin.apps.XAdminConfig',
     
 ]
 

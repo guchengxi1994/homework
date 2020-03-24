@@ -5,11 +5,11 @@
 @Author: xiaoshuyui
 @Date: 2020-03-18 17:02:44
 @LastEditors: xiaoshuyui
-@LastEditTime: 2020-03-20 11:15:30
+@LastEditTime: 2020-03-24 09:14:59
 '''
 from django.db import models
-from BaseApp_1.models import User,Worker
-import uuid,random
+from baseapp_1.models import User,Worker
+# import uuid,random
 
 # Create your models here.
 

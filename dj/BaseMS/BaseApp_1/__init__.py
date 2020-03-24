@@ -5,6 +5,6 @@
 @Author: xiaoshuyui
 @Date: 2020-03-18 10:31:45
 @LastEditors: xiaoshuyui
-@LastEditTime: 2020-03-18 13:50:52
+@LastEditTime: 2020-03-24 09:17:56
 '''
-default_app_config = 'BaseApp_1.apps.Baseapp1Config'
+default_app_config = 'baseapp_1.apps.Baseapp1Config'
