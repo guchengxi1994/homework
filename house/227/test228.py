@@ -171,8 +171,8 @@ def process(imgPath):
 
 
 if __name__ == '__main__':
-    p1 = 'D:\\testALg\\homework\\house\\227\\1-2weld.jpg'
-    p2 = 'D:\\testALg\\homework\\house\\227\\2-3.jpg'
+    p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1149-B-55-0-0000.jpg'
+    p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1150-B-56-14-0000.jpg'
 
 
     import cv2
@@ -232,5 +232,6 @@ if __name__ == '__main__':
  
 
 
-    # imsave('out.png', lcc)
+    imsave('out1.png', i1*255)
+    imsave('out2.png', i2*255)
 
