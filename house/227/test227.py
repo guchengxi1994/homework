@@ -1,3 +1,12 @@
+'''
+@lanhuage: python
+@Descripttion: 
+@version: beta
+@Author: xiaoshuyui
+@Date: 2020-02-27 17:01:01
+@LastEditors: xiaoshuyui
+@LastEditTime: 2020-03-24 17:03:28
+'''
 import cv2
 import numpy as np
 import os
@@ -54,15 +63,12 @@ def FT(src):
     # salient_map[salient_map<200] = 255
     # salient_map[salient_map!=255] = 0
 
-
-
-
-    
     return salient_map
 
 
 
 if __name__ == "__main__":
+    import copy
     
     # i = cv2.imread(image_ROOT+os.sep+"4-5.jpg")
     i = cv2.imread(BASE_DIR+os.sep+"1-2weld.jpg")
@@ -71,5 +77,38 @@ if __name__ == "__main__":
     # i = i.astype(np.uint8)
 
     i2 = FT(i)
+    s_i2 = np.sum(i2)
+    s_h_i2 = np.sum(i2,axis=0)
+    s = 0
+    times = 0
+    for i in s_h_i2:
+        if s>0.5*s_i2:
+            break
+        else:
+            s = s+i
+            times = times + 1 
+
+    print(times)
+
+    # i3 = copy.deepcopy(i2)
+
+    print(np.max(i2))
+
+    i3 = np.array(i3,dtype=np.float32)
+
+    # baseLine = i2[:,times] 
+    p1 = i3[:,0:times]/255
+    p2 = i3[:,times+1:] /255
+
+    l1 = np.sum(p1,1)
+    l2 = np.sum(p2,1)
+    print(len(l1-l2))
+
+    print(l1 - l2)
+
+
+
+
+
 
     cv2.imwrite(BASE_DIR+os.sep+"1122.jpg",i2)
