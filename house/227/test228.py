@@ -70,6 +70,9 @@ from scipy.ndimage.filters import gaussian_filter
 from skimage.filters import threshold_otsu
 from skimage.measure import label
 import cv2
+from skimage.data import astronaut
+from skimage.io import imsave,imread
+import copy
 
 def largestConnectComponent(bw_img):
     '''
@@ -123,12 +126,37 @@ def xdog(im, gamma=0.98, phi=200, eps=-0.1, k=1.6, sigma=0.8, binarize=False):
     imdiff = imdiff.astype('float32')
     return imdiff
 
-if __name__ == '__main__':
-    from skimage.data import astronaut
-    from skimage.io import imsave,imread
-    # im = astronaut()
-    # im = imread('D:\\testALg\\homework\\house\\227\\1-2weld.jpg')
-    im = imread('D:\\testALg\\homework\\house\\227\\1122.jpg')
+def getShape(i2):
+    s_i2 = np.sum(i2)
+    s_h_i2 = np.sum(i2,axis=0)
+    s = 0
+    times = 0
+    for i in s_h_i2:
+        if s>0.5*s_i2:
+            break
+        else:
+            s = s+i
+            times = times + 1 
+
+    # print(times)
+    # # i3 = copy.deepcopy(i2)
+    # print(np.max(i2))
+
+    i2 = np.array(i2,dtype=np.float32)
+
+    # baseLine = i2[:,times] 
+    p1 = i2[:,0:times]
+    p2 = i2[:,times+1:] 
+
+    l1 = np.sum(p1,1)
+    l2 = np.sum(p2,1)
+    res = l1 - l2
+    return res
+
+
+def process(imgPath):
+    im = imread(imgPath)
+
     im = im / 255.0
     im = xdog(im, binarize=True, k=20)
 
@@ -136,9 +164,73 @@ if __name__ == '__main__':
     # img[:,int(0.5*img.shape[1])] = 1
     lcc = largestConnectComponent(img)
     lcc = np.array(lcc,dtype=np.uint8)
-    lcc = lcc*255
+
+    return lcc
 
 
 
-    imsave('out.png', lcc)
+
+if __name__ == '__main__':
+    p1 = 'D:\\testALg\\homework\\house\\227\\1-2weld.jpg'
+    p2 = 'D:\\testALg\\homework\\house\\227\\2-3.jpg'
+
+
+    import cv2
+    import matplotlib.pyplot as plt
+
+    
+
+    
+    # im = astronaut()
+    # im = imread('D:\\testALg\\homework\\house\\227\\1-2weld.jpg')
+    # im = imread('D:\\testALg\\homework\\house\\227\\1122.jpg')
+
+    # i2 = copy.deepcopy(lcc)
+    i1,i2 = process(p1),process(p2)
+
+    
+    # lcc = lcc*255
+
+    r1 = getShape(i1)
+    r2 = getShape(i2)
+
+    from dtw import dtw,accelerated_dtw
+    # import fastDtw
+    import time
+    a1 = time.time()
+
+    r11 = r1[int(0.25*len(r1)):int(0.75*len(r1))]
+    r22 = r2[int(0.25*len(r2)):int(0.75*len(r2))]
+
+
+
+    res = cv2.matchTemplate(r1, r22, cv2.TM_CCOEFF_NORMED)
+    min_val, max_val, _, _ = cv2.minMaxLoc(res)
+
+
+    # ma = lambda r1,r2:np.abs(r1-r2)
+    # d, _,_,_ = accelerated_dtw(r11, r22, dist='euclidean')
+    a2 = time.time()
+    # print(a2-a1)
+    print(max_val)
+    # print(min_val)
+
+    # print(d)
+    
+    y = r1
+    x = np.linspace(1, len(y), len(y))
+    plt.plot(x, y, ls="-", lw=2, label="plot figure")
+
+    plt.legend()
+
+    plt.show()
+
+
+
+
+
+ 
+
+
+    # imsave('out.png', lcc)
 
