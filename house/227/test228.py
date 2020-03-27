@@ -70,7 +70,7 @@ from scipy.ndimage.filters import gaussian_filter
 from skimage.filters import threshold_otsu
 from skimage.measure import label
 import cv2
-from skimage.data import astronaut
+# from skimage.data import astronaut
 from skimage.io import imsave,imread
 import copy
 
@@ -217,13 +217,13 @@ if __name__ == '__main__':
 
     # print(d)
     
-    y = r1
-    x = np.linspace(1, len(y), len(y))
-    plt.plot(x, y, ls="-", lw=2, label="plot figure")
+    # y = r1
+    # x = np.linspace(1, len(y), len(y))
+    # plt.plot(x, y, ls="-", lw=2, label="plot figure")
 
-    plt.legend()
+    # plt.legend()
 
-    plt.show()
+    # plt.show()
 
 
 
