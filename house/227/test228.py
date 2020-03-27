@@ -105,6 +105,40 @@ def largestConnectComponent(bw_img):
 
     return lcc
 
+
+
+
+
+def getMaxRegion(img):
+    _, labels, stats, centroids = cv2.connectedComponentsWithStats(img)
+    x,y = stats.shape
+
+    # for i in (1,x+1):
+    # stats1 = stats[1:,:]
+    maxArea = 0
+    lab = 0
+    for i in range(1,x):
+        if stats[i][4]>maxArea:
+            maxArea = stats[i][4]
+            lab = i 
+    
+    labels[labels!=lab] = 0
+
+    labels[labels!=0] = 1
+
+    return labels
+
+    
+        
+
+
+
+
+
+
+
+
+
 def xdog(im, gamma=0.98, phi=200, eps=-0.1, k=1.6, sigma=0.8, binarize=False):
     # Source : https://github.com/CemalUnal/XDoG-Filter
     # Reference : XDoG: An eXtended difference-of-Gaussians compendium including advanced image stylization
@@ -161,18 +195,30 @@ def process(imgPath):
     im = xdog(im, binarize=True, k=20)
 
     img = np.array(im,dtype=np.uint8)
+    print(np.max(img))
     # img[:,int(0.5*img.shape[1])] = 1
-    lcc = largestConnectComponent(img)
-    lcc = np.array(lcc,dtype=np.uint8)
+    lcc = getMaxRegion(img)
+    # lcc = np.array(lcc,dtype=np.uint8)
 
-    return lcc
+    wL = np.sum(lcc,axis=0,dtype=np.float32)
+    # wwl = (wL != 0)
+    wL[wL == 0] = np.NaN
+    w = np.nanmean(wL)
+    # img[:,int(0.5*img.shape[1])] = 1
+    # lcc = largestConnectComponent(img)
+    # lcc = np.array(lcc,dtype=np.uint8)
+
+    return lcc,w
 
 
 
 
 if __name__ == '__main__':
-    p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1149-B-55-0-0000.jpg'
-    p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1150-B-56-14-0000.jpg'
+    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_498-F-125-12-0000.jpg'
+    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_500-F-126-12-0000.jpg'
+
+    p1 = 'D:\\getWeld\\results\\1165-B-63-12-0000.jpg'
+    p2 = 'D:\\getWeld\\results\\1102-C101-16-0000.jpg'
 
 
     import cv2
@@ -186,7 +232,9 @@ if __name__ == '__main__':
     # im = imread('D:\\testALg\\homework\\house\\227\\1122.jpg')
 
     # i2 = copy.deepcopy(lcc)
-    i1,i2 = process(p1),process(p2)
+    i1,w1 = process(p1)
+    print(w1)
+    i2,w2 = process(p2)
 
     
     # lcc = lcc*255
@@ -204,26 +252,32 @@ if __name__ == '__main__':
 
 
 
-    res = cv2.matchTemplate(r1, r22, cv2.TM_CCOEFF_NORMED)
-    min_val, max_val, _, _ = cv2.minMaxLoc(res)
+    res = cv2.matchTemplate(r1, r22, cv2.TM_CCORR_NORMED)
+    _, max_val, _, _ = cv2.minMaxLoc(res)
+
+    res2 = cv2.matchTemplate(r2, r11, cv2.TM_CCORR_NORMED)
+    _, max_val2, _, _ = cv2.minMaxLoc(res2)
 
 
     # ma = lambda r1,r2:np.abs(r1-r2)
     # d, _,_,_ = accelerated_dtw(r11, r22, dist='euclidean')
     a2 = time.time()
     # print(a2-a1)
-    print(max_val)
+    print(0.5*(max_val+max_val2))
     # print(min_val)
 
     # print(d)
     
-    # y = r1
+    # y = r2
     # x = np.linspace(1, len(y), len(y))
     # plt.plot(x, y, ls="-", lw=2, label="plot figure")
 
     # plt.legend()
 
     # plt.show()
+
+    # ssssss = cv2.compareHist(r1,r2,cv2.HISTCMP_BHATTACHARYYA)
+    # print(ssssss)
 
 
 
