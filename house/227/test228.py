@@ -214,11 +214,11 @@ def process(imgPath):
 
 
 if __name__ == '__main__':
-    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_498-F-125-12-0000.jpg'
-    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_500-F-126-12-0000.jpg'
+    p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_498-F-125-12-0000.jpg'
+    p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_500-F-126-12-0000.jpg'
 
-    p1 = 'D:\\getWeld\\results\\1165-B-63-12-0000.jpg'
-    p2 = 'D:\\getWeld\\results\\1102-C101-16-0000.jpg'
+    # p1 = 'D:\\getWeld\\results\\1165-B-63-12-0000.jpg'
+    # p2 = 'D:\\getWeld\\results\\1102-C101-16-0000.jpg'
 
 
     import cv2
@@ -278,6 +278,24 @@ if __name__ == '__main__':
 
     # ssssss = cv2.compareHist(r1,r2,cv2.HISTCMP_BHATTACHARYYA)
     # print(ssssss)
+
+    # from sdtw import SoftDTW
+    # from sdtw.distance import SquaredEuclidean
+
+    # D = SquaredEuclidean(r1.reshape(-1,1), r2.reshape(-1,1))
+    # sdtw = SoftDTW(D, gamma=1.0)
+    # value = sdtw.compute()
+    # E = sdtw.grad()
+    # G = D.jacobian_product(E)
+
+    # print(value)
+
+
+
+
+
+
+
 
 
 
