@@ -110,6 +110,8 @@ def largestConnectComponent(bw_img):
 
 
 def getMaxRegion(img):
+    # kernel = np.ones((5,5),np.uint8)
+    # opening = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
     _, labels, stats, centroids = cv2.connectedComponentsWithStats(img)
     x,y = stats.shape
 
@@ -158,6 +160,13 @@ def xdog(im, gamma=0.98, phi=200, eps=-0.1, k=1.6, sigma=0.8, binarize=False):
         th = threshold_otsu(imdiff)
         imdiff = imdiff >= th
     imdiff = imdiff.astype('float32')
+    
+    imgShape = imdiff.shape
+    if imgShape[0]>imgShape[1]:
+        imdiff[:,int(0.5*imgShape[1])] = 1
+    else:
+        imdiff[int(0.5*imgShape[0]),:] = 1
+
     return imdiff
 
 def getShape(i2):
@@ -191,6 +200,13 @@ def getShape(i2):
 def process(imgPath):
     im = imread(imgPath)
 
+    imgShape = im.shape 
+    if imgShape[0]>imgShape[1]:
+        pass 
+    else:
+        trans_img = cv2.transpose(im)
+        im = cv2.flip(trans_img, 1)
+
     im = im / 255.0
     im = xdog(im, binarize=True, k=20)
 
@@ -211,14 +227,46 @@ def process(imgPath):
     return lcc,w
 
 
+def smooth(a,WSZ = 3):
+  # a:原始数据，NumPy 1-D array containing the data to be smoothed
+  # 必须是1-D的，如果不是，请使用 np.ravel()或者np.squeeze()转化 
+  # WSZ: smoothing window size needs, which must be odd number,
+  # as in the original MATLAB implementation
+  out0 = np.convolve(a,np.ones(WSZ,dtype=int),'valid')/WSZ
+  r = np.arange(1,WSZ-1,2)
+  start = np.cumsum(a[:WSZ-1])[::2]/r
+  stop = (np.cumsum(a[:-WSZ:-1])[::2]/r)[::-1]
+  return np.concatenate(( start , out0, stop ))
+
+def nomarlLize(r):
+    # import scipy.signal as signal
+    r = np.array(r,dtype=np.float32)
+
+
+    minV = np.min(r)
+    maxV = np.max(r)
+    # meanV = np.mean(r)
+
+    return (r-minV)/(maxV - minV)
+
+
 
 
 if __name__ == '__main__':
-    p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_498-F-125-12-0000.jpg'
-    p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_500-F-126-12-0000.jpg'
+    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_498-F-125-12-0000.jpg'
+    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_500-F-126-12-0000.jpg'
 
-    # p1 = 'D:\\getWeld\\results\\1165-B-63-12-0000.jpg'
-    # p2 = 'D:\\getWeld\\results\\1102-C101-16-0000.jpg'
+    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_669-H-112-22-0000.jpg'
+    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_672-H-113-22-0000.jpg'
+
+    p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1149-B-55-0-0000.jpg'
+    p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1150-B-56-14-0000.jpg'
+
+    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\w1.jpg'
+    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\w2.jpg'
+
+    # p1 = 'D:\\getWeld\\results\\pipelineCode-200-SC30101-2B3S1-H041-weldingCode-G6_0002.jpg'
+    # p2 = 'D:\\getWeld\\results\\pipelineCode-150-ME302013-3B34S1-H031-weldingCode-G9G243849_0020.jpg'
 
 
     import cv2
@@ -239,8 +287,11 @@ if __name__ == '__main__':
     
     # lcc = lcc*255
 
-    r1 = getShape(i1)
-    r2 = getShape(i2)
+    # r1 = getShape(i1)
+    # r2 = getShape(i2)
+
+    r1 = nomarlLize(getShape(i1))
+    r2 = nomarlLize(getShape(i2))
 
     from dtw import dtw,accelerated_dtw
     # import fastDtw
@@ -252,29 +303,36 @@ if __name__ == '__main__':
 
 
 
-    res = cv2.matchTemplate(r1, r22, cv2.TM_CCORR_NORMED)
-    _, max_val, _, _ = cv2.minMaxLoc(res)
+    res = cv2.matchTemplate(r1, r22, cv2.TM_CCOEFF_NORMED)
+    min_val1, max_val, _, _ = cv2.minMaxLoc(res)
 
-    res2 = cv2.matchTemplate(r2, r11, cv2.TM_CCORR_NORMED)
-    _, max_val2, _, _ = cv2.minMaxLoc(res2)
+    res2 = cv2.matchTemplate(r2, r11, cv2.TM_CCOEFF_NORMED)
+    min_val2, max_val2, _, _ = cv2.minMaxLoc(res2)
 
 
     # ma = lambda r1,r2:np.abs(r1-r2)
     # d, _,_,_ = accelerated_dtw(r11, r22, dist='euclidean')
     a2 = time.time()
     # print(a2-a1)
-    print(0.5*(max_val+max_val2))
+    print(max(max_val,max_val2))
+
+    print(min(min_val1,min_val2))
     # print(min_val)
 
     # print(d)
     
-    # y = r2
-    # x = np.linspace(1, len(y), len(y))
-    # plt.plot(x, y, ls="-", lw=2, label="plot figure")
+    y1 = r1
+    y2 = r2
 
-    # plt.legend()
+    print(len(y1))
+    x1 = np.linspace(1, len(y1), len(y1))
+    x2 = np.linspace(1, len(y2), len(y2))
+    plt.plot(x1, y1, ls="-", lw=2, label="plot figure")
+    plt.plot(x2, y2, ls="-", lw=2, label="plot figure")
 
-    # plt.show()
+    plt.legend()
+
+    plt.show()
 
     # ssssss = cv2.compareHist(r1,r2,cv2.HISTCMP_BHATTACHARYYA)
     # print(ssssss)
