@@ -74,6 +74,27 @@ import cv2
 from skimage.io import imsave,imread
 import copy
 
+
+def imFill(img):
+    img = img*255
+    img = np.array(img,dtype=np.uint8)
+    im_floodfill = img.copy()
+    h, w = img.shape[:2]
+  
+    mask = np.zeros((h+2, w+2), np.uint8)  
+    # Floodfill from point (0, 0)
+    cv2.floodFill(im_floodfill, mask, (0,0), 255);   
+    # Invert floodfilled image
+    im_floodfill_inv = cv2.bitwise_not(im_floodfill)
+
+    cv2.imwrite("out22222.png",im_floodfill_inv)
+    # Combine the two images to get the foreground.
+    im_out = img + im_floodfill_inv
+
+    cv2.imwrite("out33333.png",im_out)
+
+
+
 def largestConnectComponent(bw_img):
     '''
     compute largest Connect component of an labeled image
@@ -166,7 +187,7 @@ def xdog(im, gamma=0.98, phi=200, eps=-0.1, k=1.6, sigma=0.8, binarize=False):
         imdiff[:,int(0.5*imgShape[1])] = 1
     else:
         imdiff[int(0.5*imgShape[0]),:] = 1
-
+    # imFill(imdiff)
     return imdiff
 
 def getShape(i2):
@@ -197,8 +218,33 @@ def getShape(i2):
     return res
 
 
+def local_threshold(image):
+    gray = cv2.cvtColor(image,cv2.COLOR_BGRA2GRAY)
+    # binary = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,25,10)
+    binary = cv2.adaptiveThreshold(gray, 1, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 55, 0)
+    return binary
+
+
+
+def his(image):
+    b, g, r = cv2.split(image)
+    # 创建局部直方图均衡化
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(5, 5))
+    # 对每一个通道进行局部直方图均衡化
+    b = clahe.apply(b)
+    g = clahe.apply(g)
+    r = clahe.apply(r)
+    # 合并处理后的三通道 成为处理后的图
+    image = cv2.merge([b, g, r])
+
+    return image
+
+
+
 def process(imgPath):
     im = imread(imgPath)
+    im = his(im)
+    im = cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
 
     imgShape = im.shape 
     if imgShape[0]>imgShape[1]:
@@ -207,16 +253,23 @@ def process(imgPath):
         trans_img = cv2.transpose(im)
         im = cv2.flip(trans_img, 1)
 
-    im = im / 255.0
-    im = xdog(im, binarize=True, k=20)
+    
+    imgIn = im / 255.0
+    imgIn = xdog(imgIn, binarize=True,k=20)
+    # im = local_threshold(im)
 
-    img = np.array(im,dtype=np.uint8)
-    print(np.max(img))
+    # cv2.imwrite("out33333.png", imgIn*im)
+    fe = imgIn * im 
+    fea2 = np.sum(fe,axis=1,dtype=np.float32)
+
+
+    img = np.array(imgIn,dtype=np.uint8)
+    # print(np.max(img))
     # img[:,int(0.5*img.shape[1])] = 1
     lcc = getMaxRegion(img)
     # lcc = np.array(lcc,dtype=np.uint8)
 
-    wL = np.sum(lcc,axis=0,dtype=np.float32)
+    wL = np.sum(lcc,axis=1,dtype=np.float32)
     # wwl = (wL != 0)
     wL[wL == 0] = np.NaN
     w = np.nanmean(wL)
@@ -224,7 +277,7 @@ def process(imgPath):
     # lcc = largestConnectComponent(img)
     # lcc = np.array(lcc,dtype=np.uint8)
 
-    return lcc,w
+    return lcc,w,fea2
 
 
 def smooth(a,WSZ = 3):
@@ -239,34 +292,37 @@ def smooth(a,WSZ = 3):
   return np.concatenate(( start , out0, stop ))
 
 def nomarlLize(r):
-    # import scipy.signal as signal
+    # print(np.min(r))
+    # print(np.max(r))
+    # print(w)
+    # r = [x if abs(x)>5 and abs(x)<w*0.5 else 0 for x in r]
     r = np.array(r,dtype=np.float32)
-
-
     minV = np.min(r)
     maxV = np.max(r)
-    # meanV = np.mean(r)
-
     return (r-minV)/(maxV - minV)
+
+    
+
+    # return(r)
 
 
 
 
 if __name__ == '__main__':
-    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_498-F-125-12-0000.jpg'
-    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_500-F-126-12-0000.jpg'
+    p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_498-F-125-12-0000.jpg'
+    p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_500-F-126-12-0000.jpg'
 
-    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_669-H-112-22-0000.jpg'
-    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_672-H-113-22-0000.jpg'
+    p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_669-H-112-22-0000.jpg'
+    p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_672-H-113-22-0000.jpg'
 
-    p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1149-B-55-0-0000.jpg'
-    p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1150-B-56-14-0000.jpg'
+    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1149-B-55-0-0000.jpg'
+    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1150-B-56-14-0000.jpg'
 
     # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\w1.jpg'
     # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\w2.jpg'
 
-    # p1 = 'D:\\getWeld\\results\\pipelineCode-200-SC30101-2B3S1-H041-weldingCode-G6_0002.jpg'
-    # p2 = 'D:\\getWeld\\results\\pipelineCode-150-ME302013-3B34S1-H031-weldingCode-G9G243849_0020.jpg'
+    # p1 = 'D:\\getWeld\\results\\1154-C80-1-0000.jpg'
+    # p2 = 'D:\\getWeld\\results\\1120-B-37-0-0000.jpg'
 
 
     import cv2
@@ -280,9 +336,9 @@ if __name__ == '__main__':
     # im = imread('D:\\testALg\\homework\\house\\227\\1122.jpg')
 
     # i2 = copy.deepcopy(lcc)
-    i1,w1 = process(p1)
-    print(w1)
-    i2,w2 = process(p2)
+    i1,w1,fea1 = process(p1)
+    # print(w1)
+    i2,w2,fea2 = process(p2)
 
     
     # lcc = lcc*255
@@ -308,21 +364,31 @@ if __name__ == '__main__':
 
     res2 = cv2.matchTemplate(r2, r11, cv2.TM_CCOEFF_NORMED)
     min_val2, max_val2, _, _ = cv2.minMaxLoc(res2)
+    print(0.5*(max_val+max_val2))
+    
+    r11 = fea1[int(0.25*len(r1)):int(0.75*len(r1))]
+    r22 = fea2[int(0.25*len(r2)):int(0.75*len(r2))]
+
+    res = cv2.matchTemplate(fea1, r22, cv2.TM_CCOEFF_NORMED)
+    min_val1, max_val, _, _ = cv2.minMaxLoc(res)
+
+    res2 = cv2.matchTemplate(fea2, r11, cv2.TM_CCOEFF_NORMED)
+    min_val2, max_val2, _, _ = cv2.minMaxLoc(res2)
 
 
     # ma = lambda r1,r2:np.abs(r1-r2)
     # d, _,_,_ = accelerated_dtw(r11, r22, dist='euclidean')
-    a2 = time.time()
-    # print(a2-a1)
-    print(max(max_val,max_val2))
 
-    print(min(min_val1,min_val2))
+    # print(a2-a1)
+    print(0.5*(max_val+max_val2))
+
+    # print(min(min_val1,min_val2))
     # print(min_val)
 
     # print(d)
     
-    y1 = r1
-    y2 = r2
+    y1 = fea1
+    y2 = fea2
 
     print(len(y1))
     x1 = np.linspace(1, len(y1), len(y1))
