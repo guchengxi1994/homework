@@ -278,6 +278,7 @@ def process(imgPath):
     # lcc = np.array(lcc,dtype=np.uint8)
 
     return lcc,w,fea2
+    # return lcc,w,nomarlLize(fea2)
 
 
 def smooth(a,WSZ = 3):
@@ -309,11 +310,11 @@ def nomarlLize(r):
 
 
 if __name__ == '__main__':
-    p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_498-F-125-12-0000.jpg'
-    p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_500-F-126-12-0000.jpg'
+    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_498-F-125-12-0000.jpg'
+    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_500-F-126-12-0000.jpg'
 
-    p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_669-H-112-22-0000.jpg'
-    p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_672-H-113-22-0000.jpg'
+    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_669-H-112-22-0000.jpg'
+    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_672-H-113-22-0000.jpg'
 
     # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1149-B-55-0-0000.jpg'
     # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1150-B-56-14-0000.jpg'
@@ -321,8 +322,8 @@ if __name__ == '__main__':
     # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\w1.jpg'
     # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\w2.jpg'
 
-    # p1 = 'D:\\getWeld\\results\\1154-C80-1-0000.jpg'
-    # p2 = 'D:\\getWeld\\results\\1120-B-37-0-0000.jpg'
+    p1 = 'D:\\getWeld\\results\\1068-B-4-16-0000.jpg'
+    p2 = 'D:\\getWeld\\results\\1108-B-30-26-0000.jpg'
 
 
     import cv2
@@ -349,10 +350,12 @@ if __name__ == '__main__':
     r1 = nomarlLize(getShape(i1))
     r2 = nomarlLize(getShape(i2))
 
-    from dtw import dtw,accelerated_dtw
+    # r1 = getShape(i1)
+    # r2 = getShape(i2)
+
+
     # import fastDtw
-    import time
-    a1 = time.time()
+
 
     r11 = r1[int(0.25*len(r1)):int(0.75*len(r1))]
     r22 = r2[int(0.25*len(r2)):int(0.75*len(r2))]
