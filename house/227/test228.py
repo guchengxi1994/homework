@@ -70,9 +70,30 @@ from scipy.ndimage.filters import gaussian_filter
 from skimage.filters import threshold_otsu
 from skimage.measure import label
 import cv2
-from skimage.data import astronaut
+# from skimage.data import astronaut
 from skimage.io import imsave,imread
 import copy
+
+
+def imFill(img):
+    img = img*255
+    img = np.array(img,dtype=np.uint8)
+    im_floodfill = img.copy()
+    h, w = img.shape[:2]
+  
+    mask = np.zeros((h+2, w+2), np.uint8)  
+    # Floodfill from point (0, 0)
+    cv2.floodFill(im_floodfill, mask, (0,0), 255);   
+    # Invert floodfilled image
+    im_floodfill_inv = cv2.bitwise_not(im_floodfill)
+
+    cv2.imwrite("out22222.png",im_floodfill_inv)
+    # Combine the two images to get the foreground.
+    im_out = img + im_floodfill_inv
+
+    cv2.imwrite("out33333.png",im_out)
+
+
 
 def largestConnectComponent(bw_img):
     '''
@@ -105,6 +126,42 @@ def largestConnectComponent(bw_img):
 
     return lcc
 
+
+
+
+
+def getMaxRegion(img):
+    # kernel = np.ones((5,5),np.uint8)
+    # opening = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
+    _, labels, stats, centroids = cv2.connectedComponentsWithStats(img)
+    x,y = stats.shape
+
+    # for i in (1,x+1):
+    # stats1 = stats[1:,:]
+    maxArea = 0
+    lab = 0
+    for i in range(1,x):
+        if stats[i][4]>maxArea:
+            maxArea = stats[i][4]
+            lab = i 
+    
+    labels[labels!=lab] = 0
+
+    labels[labels!=0] = 1
+
+    return labels
+
+    
+        
+
+
+
+
+
+
+
+
+
 def xdog(im, gamma=0.98, phi=200, eps=-0.1, k=1.6, sigma=0.8, binarize=False):
     # Source : https://github.com/CemalUnal/XDoG-Filter
     # Reference : XDoG: An eXtended difference-of-Gaussians compendium including advanced image stylization
@@ -124,6 +181,13 @@ def xdog(im, gamma=0.98, phi=200, eps=-0.1, k=1.6, sigma=0.8, binarize=False):
         th = threshold_otsu(imdiff)
         imdiff = imdiff >= th
     imdiff = imdiff.astype('float32')
+    
+    imgShape = imdiff.shape
+    if imgShape[0]>imgShape[1]:
+        imdiff[:,int(0.5*imgShape[1])] = 1
+    else:
+        imdiff[int(0.5*imgShape[0]),:] = 1
+    # imFill(imdiff)
     return imdiff
 
 def getShape(i2):
@@ -154,25 +218,112 @@ def getShape(i2):
     return res
 
 
+def local_threshold(image):
+    gray = cv2.cvtColor(image,cv2.COLOR_BGRA2GRAY)
+    # binary = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,25,10)
+    binary = cv2.adaptiveThreshold(gray, 1, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 55, 0)
+    return binary
+
+
+
+def his(image):
+    b, g, r = cv2.split(image)
+    # 创建局部直方图均衡化
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(5, 5))
+    # 对每一个通道进行局部直方图均衡化
+    b = clahe.apply(b)
+    g = clahe.apply(g)
+    r = clahe.apply(r)
+    # 合并处理后的三通道 成为处理后的图
+    image = cv2.merge([b, g, r])
+
+    return image
+
+
+
 def process(imgPath):
     im = imread(imgPath)
+    im = his(im)
+    im = cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
 
-    im = im / 255.0
-    im = xdog(im, binarize=True, k=20)
+    imgShape = im.shape 
+    if imgShape[0]>imgShape[1]:
+        pass 
+    else:
+        trans_img = cv2.transpose(im)
+        im = cv2.flip(trans_img, 1)
 
-    img = np.array(im,dtype=np.uint8)
+    
+    imgIn = im / 255.0
+    imgIn = xdog(imgIn, binarize=True,k=20)
+    # im = local_threshold(im)
+
+    # cv2.imwrite("out33333.png", imgIn*im)
+    fe = imgIn * im 
+    fea2 = np.sum(fe,axis=1,dtype=np.float32)
+
+
+    img = np.array(imgIn,dtype=np.uint8)
+    # print(np.max(img))
     # img[:,int(0.5*img.shape[1])] = 1
-    lcc = largestConnectComponent(img)
-    lcc = np.array(lcc,dtype=np.uint8)
+    lcc = getMaxRegion(img)
+    # lcc = np.array(lcc,dtype=np.uint8)
 
-    return lcc
+    wL = np.sum(lcc,axis=1,dtype=np.float32)
+    # wwl = (wL != 0)
+    wL[wL == 0] = np.NaN
+    w = np.nanmean(wL)
+    # img[:,int(0.5*img.shape[1])] = 1
+    # lcc = largestConnectComponent(img)
+    # lcc = np.array(lcc,dtype=np.uint8)
+
+    return lcc,w,fea2
+    # return lcc,w,nomarlLize(fea2)
+
+
+def smooth(a,WSZ = 3):
+  # a:原始数据，NumPy 1-D array containing the data to be smoothed
+  # 必须是1-D的，如果不是，请使用 np.ravel()或者np.squeeze()转化 
+  # WSZ: smoothing window size needs, which must be odd number,
+  # as in the original MATLAB implementation
+  out0 = np.convolve(a,np.ones(WSZ,dtype=int),'valid')/WSZ
+  r = np.arange(1,WSZ-1,2)
+  start = np.cumsum(a[:WSZ-1])[::2]/r
+  stop = (np.cumsum(a[:-WSZ:-1])[::2]/r)[::-1]
+  return np.concatenate(( start , out0, stop ))
+
+def nomarlLize(r):
+    # print(np.min(r))
+    # print(np.max(r))
+    # print(w)
+    # r = [x if abs(x)>5 and abs(x)<w*0.5 else 0 for x in r]
+    r = np.array(r,dtype=np.float32)
+    minV = np.min(r)
+    maxV = np.max(r)
+    return (r-minV)/(maxV - minV)
+
+    
+
+    # return(r)
 
 
 
 
 if __name__ == '__main__':
-    p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1149-B-55-0-0000.jpg'
-    p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1150-B-56-14-0000.jpg'
+    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_498-F-125-12-0000.jpg'
+    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_500-F-126-12-0000.jpg'
+
+    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_669-H-112-22-0000.jpg'
+    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_672-H-113-22-0000.jpg'
+
+    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1149-B-55-0-0000.jpg'
+    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1150-B-56-14-0000.jpg'
+
+    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\w1.jpg'
+    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\w2.jpg'
+
+    p1 = 'D:\\getWeld\\results\\1068-B-4-16-0000.jpg'
+    p2 = 'D:\\getWeld\\results\\1108-B-30-26-0000.jpg'
 
 
     import cv2
@@ -186,18 +337,25 @@ if __name__ == '__main__':
     # im = imread('D:\\testALg\\homework\\house\\227\\1122.jpg')
 
     # i2 = copy.deepcopy(lcc)
-    i1,i2 = process(p1),process(p2)
+    i1,w1,fea1 = process(p1)
+    # print(w1)
+    i2,w2,fea2 = process(p2)
 
     
     # lcc = lcc*255
 
-    r1 = getShape(i1)
-    r2 = getShape(i2)
+    # r1 = getShape(i1)
+    # r2 = getShape(i2)
 
-    from dtw import dtw,accelerated_dtw
+    r1 = nomarlLize(getShape(i1))
+    r2 = nomarlLize(getShape(i2))
+
+    # r1 = getShape(i1)
+    # r2 = getShape(i2)
+
+
     # import fastDtw
-    import time
-    a1 = time.time()
+
 
     r11 = r1[int(0.25*len(r1)):int(0.75*len(r1))]
     r22 = r2[int(0.25*len(r2)):int(0.75*len(r2))]
@@ -205,25 +363,66 @@ if __name__ == '__main__':
 
 
     res = cv2.matchTemplate(r1, r22, cv2.TM_CCOEFF_NORMED)
-    min_val, max_val, _, _ = cv2.minMaxLoc(res)
+    min_val1, max_val, _, _ = cv2.minMaxLoc(res)
+
+    res2 = cv2.matchTemplate(r2, r11, cv2.TM_CCOEFF_NORMED)
+    min_val2, max_val2, _, _ = cv2.minMaxLoc(res2)
+    print(0.5*(max_val+max_val2))
+    
+    r11 = fea1[int(0.25*len(r1)):int(0.75*len(r1))]
+    r22 = fea2[int(0.25*len(r2)):int(0.75*len(r2))]
+
+    res = cv2.matchTemplate(fea1, r22, cv2.TM_CCOEFF_NORMED)
+    min_val1, max_val, _, _ = cv2.minMaxLoc(res)
+
+    res2 = cv2.matchTemplate(fea2, r11, cv2.TM_CCOEFF_NORMED)
+    min_val2, max_val2, _, _ = cv2.minMaxLoc(res2)
 
 
     # ma = lambda r1,r2:np.abs(r1-r2)
     # d, _,_,_ = accelerated_dtw(r11, r22, dist='euclidean')
-    a2 = time.time()
+
     # print(a2-a1)
-    print(max_val)
+    print(0.5*(max_val+max_val2))
+
+    # print(min(min_val1,min_val2))
     # print(min_val)
 
     # print(d)
     
-    y = r1
-    x = np.linspace(1, len(y), len(y))
-    plt.plot(x, y, ls="-", lw=2, label="plot figure")
+    y1 = fea1
+    y2 = fea2
+
+    print(len(y1))
+    x1 = np.linspace(1, len(y1), len(y1))
+    x2 = np.linspace(1, len(y2), len(y2))
+    plt.plot(x1, y1, ls="-", lw=2, label="plot figure")
+    plt.plot(x2, y2, ls="-", lw=2, label="plot figure")
 
     plt.legend()
 
     plt.show()
+
+    # ssssss = cv2.compareHist(r1,r2,cv2.HISTCMP_BHATTACHARYYA)
+    # print(ssssss)
+
+    # from sdtw import SoftDTW
+    # from sdtw.distance import SquaredEuclidean
+
+    # D = SquaredEuclidean(r1.reshape(-1,1), r2.reshape(-1,1))
+    # sdtw = SoftDTW(D, gamma=1.0)
+    # value = sdtw.compute()
+    # E = sdtw.grad()
+    # G = D.jacobian_product(E)
+
+    # print(value)
+
+
+
+
+
+
+
 
 
 

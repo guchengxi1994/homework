@@ -1,10 +1,19 @@
+'''
+@lanhuage: python
+@Descripttion: 
+@version: beta
+@Author: xiaoshuyui
+@Date: 2020-02-25 09:37:06
+@LastEditors: xiaoshuyui
+@LastEditTime: 2020-03-31 09:36:00
+'''
 import cv2
 import numpy as np
 
 def getMid(img):
     imgshape = img.shape 
     if len(imgshape) == 3:
-        gray = cv2.cvtColor(i, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     else:
         gray = img
     
