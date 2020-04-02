@@ -94,7 +94,7 @@ def imFill(img):
     cv2.imwrite("out33333.png",im_out)
 
 
-
+#不好用，运算时间太长
 def largestConnectComponent(bw_img):
     '''
     compute largest Connect component of an labeled image
