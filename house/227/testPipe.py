@@ -335,25 +335,8 @@ def nomarlLize(r):
 
 
 if __name__ == '__main__':
-    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_498-F-125-12-0000.jpg'
-    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_500-F-126-12-0000.jpg'
 
-    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_669-H-112-22-0000.jpg'
-    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_672-H-113-22-0000.jpg'
-
-    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1149-B-55-0-0000.jpg'
-    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1150-B-56-14-0000.jpg'
-
-    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\w1.jpg'
-    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\w2.jpg'
-
-    # p1 = 'D:\\getWeld\\results\\uploadTime-15735481088070000.jpg'
-    # p2 = 'D:\\getWeld\\results\\uploadTime-15735477899070003.jpg'
-
-    # p1 = 'D:\\getWeld\\results\\1146-B-53-16-0000.jpg'
-    # p2 = 'D:\\getWeld\\results\\1068-B-4-16-0000.jpg'
-
-    p2 = "D:\\getWeld\\pipeweld\\pipelineCode-150-LD22002-B2A-N131-weldingCode-G11_0003.jpg"
+    p2 = "D:\\getWeld\\pipeweld\\pipelineCode-200-P21115-B1D-M131-weldingCode-G5_0003.jpg"
     p1 = "D:\\getWeld\\pipeweld\\pipelineCode-150-LD22002-B2A-N131-weldingCode-G12_0005.jpg"
 
 
@@ -363,86 +346,39 @@ if __name__ == '__main__':
     i1 = imread(p1)
     i2 = imread(p2)
 
-    fea1 = process2(i1)
-    fea2 = process2(i2)
+    mode = 3
+
+    if mode == 3:
+
+        fea1 = process2(i1)
+        fea2 = process2(i2)
+
+        r11 = fea1[int(0.25*len(fea1)):int(0.75*len(fea1))]
+        r22 = fea2[int(0.25*len(fea2)):int(0.75*len(fea2))]
+
+        res = cv2.matchTemplate(fea1[int(0.15*len(fea1)):int(0.85*len(fea1))], r22, cv2.TM_CCOEFF_NORMED)
+        min_val1, max_val, _, _ = cv2.minMaxLoc(res)
+
+        res2 = cv2.matchTemplate(fea2[int(0.15*len(fea2)):int(0.85*len(fea2))], r11, cv2.TM_CCOEFF_NORMED)
+        min_val2, max_val2, _, _ = cv2.minMaxLoc(res2)
+
+
+        print(0.5*(max_val+max_val2))
 
     
+        
+        y1 = fea1
+        y2 = fea2
 
-    
-    # im = astronaut()
-    # im = imread('D:\\testALg\\homework\\house\\227\\1-2weld.jpg')
-    # im = imread('D:\\testALg\\homework\\house\\227\\1122.jpg')
+        # print(len(y1))
+        x1 = np.linspace(1, len(y1), len(y1))
+        x2 = np.linspace(1, len(y2), len(y2))
+        plt.plot(x1, y1, ls="-", lw=2, label="plot figure")
+        plt.plot(x2, y2, ls="-", lw=2, label="plot figure")
 
-    # i2 = copy.deepcopy(lcc)
-    # i1,w1,fea1 = process(p1)
-    # # print(w1)
-    # i2,w2,fea2 = process(p2)
+        plt.legend()
 
-    
-    # # lcc = lcc*255
-
-    # # r1 = getShape(i1)
-    # # r2 = getShape(i2)
-
-    # r1 = nomarlLize(getShape(i1))
-    # r2 = nomarlLize(getShape(i2))
-
-    # # r1 = getShape(i1)
-    # # r2 = getShape(i2)
-
-
-    # # import fastDtw
-
-
-    # r11 = r1[int(0.25*len(r1)):int(0.75*len(r1))]
-    # r22 = r2[int(0.25*len(r2)):int(0.75*len(r2))]
-
-
-
-    # res = cv2.matchTemplate(r1, r22, cv2.TM_CCOEFF_NORMED)
-    # min_val1, max_val, _, _ = cv2.minMaxLoc(res)
-
-    # res2 = cv2.matchTemplate(r2, r11, cv2.TM_CCOEFF_NORMED)
-    # min_val2, max_val2, _, _ = cv2.minMaxLoc(res2)
-    # print(0.5*(max_val+max_val2))
-
-    
-    r11 = fea1[int(0.25*len(fea1)):int(0.75*len(fea1))]
-    r22 = fea2[int(0.25*len(fea2)):int(0.75*len(fea2))]
-
-    res = cv2.matchTemplate(fea1, r22, cv2.TM_CCOEFF_NORMED)
-    min_val1, max_val, _, _ = cv2.minMaxLoc(res)
-
-    res2 = cv2.matchTemplate(fea2, r11, cv2.TM_CCOEFF_NORMED)
-    min_val2, max_val2, _, _ = cv2.minMaxLoc(res2)
-
-
-    # ma = lambda r1,r2:np.abs(r1-r2)
-    # d, _,_,_ = accelerated_dtw(r11, r22, dist='euclidean')
-
-    # print(a2-a1)
-    print(0.5*(max_val+max_val2))
-
-    # print(min(min_val1,min_val2))
-    # print(min_val)
-
-    # print(d)
-
-    # imsave('out1.png', i1*255)
-    # imsave('out2.png', i2*255)
-    
-    y1 = fea1
-    y2 = fea2
-
-    print(len(y1))
-    x1 = np.linspace(1, len(y1), len(y1))
-    x2 = np.linspace(1, len(y2), len(y2))
-    plt.plot(x1, y1, ls="-", lw=2, label="plot figure")
-    plt.plot(x2, y2, ls="-", lw=2, label="plot figure")
-
-    plt.legend()
-
-    plt.show()
+        plt.show()
 
     
 
