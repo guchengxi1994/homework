@@ -336,8 +336,8 @@ def nomarlLize(r):
 
 if __name__ == '__main__':
 
-    p2 = "D:\\getWeld\\pipeweld\\pipelineCode-200-P21115-B1D-M131-weldingCode-G5_0003.jpg"
-    p1 = "D:\\getWeld\\pipeweld\\pipelineCode-150-LD22002-B2A-N131-weldingCode-G12_0005.jpg"
+    p2 = "D:\\getWeld\\pipeweld\\pipelineCode-150-LD22002-B2A-N131-weldingCode-G1_0003.jpg"
+    p1 = "D:\\getWeld\\pipeweld\\pipelineCode-150-LD22002-B2A-N131-weldingCode-G2_0001.jpg"
 
 
     import cv2
