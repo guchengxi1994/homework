@@ -7,6 +7,7 @@ import cv2
 # from skimage.data import astronaut
 from skimage.io import imsave,imread
 import copy
+import math
 
 
 def imFill(img):
@@ -69,9 +70,11 @@ def getMaxRegion(img):
     # opening = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
     _, labels, stats, centroids = cv2.connectedComponentsWithStats(img)
     x,y = stats.shape
+    # print(stats.shape)
 
     # for i in (1,x+1):
-    # stats1 = stats[1:,:]
+    #     stats1 = stats[1:,:]
+    #     print(stats1)
     maxArea = 0
     lab = 0
     for i in range(1,x):
@@ -118,10 +121,12 @@ def xdog(im, gamma=0.98, phi=200, eps=-0.1, k=1.6, sigma=0.8, binarize=False):
     
     imgShape = imdiff.shape
     if imgShape[0]>imgShape[1]:
-        imdiff[:,int(0.5*imgShape[1])] = 1
+        imdiff[int(0.25*imgShape[0]):int(0.75*imgShape[0]),int(0.25*imgShape[1])] = 1
+        imdiff[int(0.25*imgShape[0]):int(0.75*imgShape[0]),int(0.75*imgShape[1])] = 1
     else:
-        imdiff[int(0.5*imgShape[0]),:] = 1
-    # imFill(imdiff)
+        imdiff[int(0.25*imgShape[0]),int(0.25*imgShape[1]):int(0.75*imgShape[1])] = 1
+        imdiff[int(0.75*imgShape[0]),int(0.25*imgShape[1]):int(0.75*imgShape[1])] = 1
+    imFill(imdiff)
     return imdiff
 
 def getShape(i2):
@@ -207,7 +212,7 @@ def process(imgPath):
     # wwl = (wL != 0)
     wL[wL == 0] = 1
     # w = np.nanmean(wL)
-    print(wL.shape)
+    # print(wL.shape)
     # img[:,int(0.5*img.shape[1])] = 1
     # lcc = largestConnectComponent(img)
     # lcc = np.array(lcc,dtype=np.uint8)
@@ -233,11 +238,15 @@ def process2(im):
     # fea1 =  process2(i1)
     # fea2 =  process2(i2)
 
+    imgIn = np.array(imgIn,dtype=np.uint8)*255
+
+    imgIn = getMaxRegion(imgIn)
+
     cv2.imwrite("out33333.png", 255*imgIn)
     fe = imgIn * im 
-    fea2 = np.sum(fe,axis=1,dtype=np.float32)
+    # fea2 = np.sum(fe,axis=1,dtype=np.float32)
     # print(len(fea2))
-    return fea2
+    return fe
 
 
 def smooth(a,WSZ = 3):
@@ -266,12 +275,75 @@ def nomarlLize(r):
     # return(r)
 
 
+def flip180(arr):
+    new_arr = arr.reshape(arr.size)
+    new_arr = new_arr[::-1]
+    new_arr = new_arr.reshape(arr.shape)
+    return new_arr
+
+
+
+def t2c(img):
+    imgShape = img.shape
+    if imgShape[0]>imgShape[1]:
+        trans_img = cv2.transpose(img)
+        img = cv2.flip(trans_img, 1)
+        imgShape = img.shape
+    
+    # print(imgShape)
+    # print("=============")
+    
+    
+    h = imgShape[0]*0.5
+    # print(hh)
+    r = 0.5*imgShape[1]
+    # rr = 0.5*r
+    # # print(r)
+    # h =  r
+
+    t = 2*math.sqrt(r**2/(1.7*h**2+r**2))
+    # print(t)
+    
+    upper = img[0:int(0.5*imgShape[0]),:]
+    lower = img[int(0.5*imgShape[0]):,:]
+
+    upper_sum = np.sum(upper,axis=0)
+    lower_sum = np.sum(flip180(lower),axis=0)
+
+    u1 = upper[:,0:int(0.25*(imgShape[1]))]
+    # print(u1)
+    u1 = np.array(u1,dtype=np.uint8)
+    # print(u1.shape)
+    u2 = upper_sum[int(0.25*(imgShape[1])):int(0.75*(imgShape[1]))]
+    u3 = upper[:,int(0.75*(imgShape[1])):]
+    u3 = np.array(u3,dtype=np.uint8)
+
+    l1 = flip180(lower[:,0:int(0.25*(imgShape[1]))])
+    # print(l1.shape)
+    l1 = np.array(l1,dtype=np.uint8)
+    l2 = lower_sum[int(0.25*(imgShape[1])):int(0.75*(imgShape[1]))]
+    l3 = flip180(lower[:,int(0.75*(imgShape[1])):])
+    l3 = np.array(l3,dtype=np.uint8)
+
+    u1_lengthen = np.sum(cv2.resize(u1,(u1.shape[0],int(u1.shape[1]*t))),axis=0)
+    u3_lengthen = np.sum(cv2.resize(u3,(u3.shape[0],int(u3.shape[0]*t))),axis=0)
+
+    l1_lenthen = np.sum(cv2.resize(l1,(l1.shape[0],int(l1.shape[0]*t))),axis=0)
+    l3_lenthen = np.sum(cv2.resize(l3,(l3.shape[0],int(l3.shape[0]*t))),axis=0)
+
+    return np.concatenate((u1_lengthen,u2,u3_lengthen,l3_lenthen,l2,l1_lenthen))
+    
+
+
+
+
+
 
 
 if __name__ == '__main__':
 
-    p2 = "D:\\getWeld\\pipeweld\\pipelineCode-150-LD22002-B2A-N131-weldingCode-G1_0003.jpg"
-    p1 = "D:\\getWeld\\pipeweld\\pipelineCode-150-LD22002-B2A-N131-weldingCode-G2_0001.jpg"
+    p2 = "D:\\getWeld\\pipeweld\\710-F-199-4-0000.jpg"
+    p1 = "D:\\getWeld\\pipeweld\\711-F-200-4-0000.jpg"
 
 
     import cv2
@@ -284,8 +356,13 @@ if __name__ == '__main__':
 
     if mode == 3:
 
-        fea1 = process2(i1)
-        fea2 = process2(i2)
+        fea1 = t2c(process2(i1))
+        fea2 = t2c(process2(i2))
+
+        print(fea1.shape)
+        print(fea2.shape)
+
+
 
         r11 = fea1[int(0.25*len(fea1)):int(0.75*len(fea1))]
         r22 = fea2[int(0.25*len(fea2)):int(0.75*len(fea2))]
@@ -304,7 +381,7 @@ if __name__ == '__main__':
         y1 = fea1
         y2 = fea2
 
-        # print(len(y1))
+   
         x1 = np.linspace(1, len(y1), len(y1))
         x2 = np.linspace(1, len(y2), len(y2))
         plt.plot(x1, y1, ls="-", lw=2, label="plot figure")
@@ -313,20 +390,3 @@ if __name__ == '__main__':
         plt.legend()
 
         plt.show()
-
-    
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
-
