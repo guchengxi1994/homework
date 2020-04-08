@@ -359,18 +359,25 @@ if __name__ == '__main__':
         fea1 = t2c(process2(i1))
         fea2 = t2c(process2(i2))
 
-        print(fea1.shape)
-        print(fea2.shape)
+        fea1 = np.array(fea1)
+        fea2 = np.array(fea2)
+
+        # print(fea1.shape)
+        # print(fea2.shape)
 
 
 
         r11 = fea1[int(0.25*len(fea1)):int(0.75*len(fea1))]
+        print(r11.shape)
         r22 = fea2[int(0.25*len(fea2)):int(0.75*len(fea2))]
+        print(r22.shape)
 
-        res = cv2.matchTemplate(fea1[int(0.15*len(fea1)):int(0.85*len(fea1))], r22, cv2.TM_CCOEFF_NORMED)
+        res = cv2.matchTemplate(fea1, r22, cv2.TM_CCOEFF_NORMED)
+        # res = cv2.matchTemplate(fea1[int(0.15*len(fea1)):int(0.85*len(fea1))], r22, cv2.TM_CCOEFF_NORMED)
         min_val1, max_val, _, _ = cv2.minMaxLoc(res)
 
-        res2 = cv2.matchTemplate(fea2[int(0.15*len(fea2)):int(0.85*len(fea2))], r11, cv2.TM_CCOEFF_NORMED)
+        # res2 = cv2.matchTemplate(fea2[int(0.15*len(fea2)):int(0.85*len(fea2))], r11, cv2.TM_CCOEFF_NORMED)
+        res2 = cv2.matchTemplate(fea2, r11, cv2.TM_CCOEFF_NORMED)
         min_val2, max_val2, _, _ = cv2.minMaxLoc(res2)
 
 
