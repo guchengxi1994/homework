@@ -119,14 +119,14 @@ def xdog(im, gamma=0.98, phi=200, eps=-0.1, k=1.6, sigma=0.8, binarize=False):
         imdiff = imdiff >= th
     imdiff = imdiff.astype('float32')
     
-    imgShape = imdiff.shape
-    if imgShape[0]>imgShape[1]:
-        imdiff[int(0.25*imgShape[0]):int(0.75*imgShape[0]),int(0.25*imgShape[1])] = 1
-        imdiff[int(0.25*imgShape[0]):int(0.75*imgShape[0]),int(0.75*imgShape[1])] = 1
-    else:
-        imdiff[int(0.25*imgShape[0]),int(0.25*imgShape[1]):int(0.75*imgShape[1])] = 1
-        imdiff[int(0.75*imgShape[0]),int(0.25*imgShape[1]):int(0.75*imgShape[1])] = 1
-    imFill(imdiff)
+    # imgShape = imdiff.shape
+    # if imgShape[0]>imgShape[1]:
+    #     imdiff[int(0.25*imgShape[0]):int(0.75*imgShape[0]),int(0.25*imgShape[1])] = 1
+    #     imdiff[int(0.25*imgShape[0]):int(0.75*imgShape[0]),int(0.75*imgShape[1])] = 1
+    # else:
+    #     imdiff[int(0.25*imgShape[0]),int(0.25*imgShape[1]):int(0.75*imgShape[1])] = 1
+    #     imdiff[int(0.75*imgShape[0]),int(0.25*imgShape[1]):int(0.75*imgShape[1])] = 1
+    
     return imdiff
 
 def getShape(i2):
@@ -238,9 +238,11 @@ def process2(im):
     # fea1 =  process2(i1)
     # fea2 =  process2(i2)
 
-    imgIn = np.array(imgIn,dtype=np.uint8)*255
 
-    imgIn = getMaxRegion(imgIn)
+    ###################################################################################
+    # imgIn = np.array(imgIn,dtype=np.uint8)*255
+    # imgIn = getMaxRegion(imgIn)
+    ###################################################################################
 
     cv2.imwrite("out33333.png", 255*imgIn)
     fe = imgIn * im 
@@ -289,10 +291,11 @@ def t2c(img):
         trans_img = cv2.transpose(img)
         img = cv2.flip(trans_img, 1)
         imgShape = img.shape
-    
+        
+    img = img[:,int(0.2*imgShape[1]):int(0.8*imgShape[1])]
     # print(imgShape)
     # print("=============")
-    
+    imgShape = img.shape
     
     h = imgShape[0]*0.5
     # print(hh)
@@ -301,7 +304,7 @@ def t2c(img):
     # # print(r)
     # h =  r
 
-    t = 2*math.sqrt(r**2/(1.7*h**2+r**2))
+    t = math.sqrt(r**2/(0.75*h**2+0.25*r**2))
     # print(t)
     
     upper = img[0:int(0.5*imgShape[0]),:]
@@ -342,11 +345,17 @@ def t2c(img):
 
 if __name__ == '__main__':
 
-    p2 = "D:\\getWeld\\pipeweld\\710-F-199-4-0000.jpg"
-    p1 = "D:\\getWeld\\pipeweld\\711-F-200-4-0000.jpg"
+    # p2 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0001.jpg"
+    # p1 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0002.jpg"
+
+    # p2 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0002.jpg"
+    # p1 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0004.jpg"
+
+    p1 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0001.jpg"
+    p2 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0002.jpg"
 
 
-    import cv2
+    # import cv2
     import matplotlib.pyplot as plt
 
     i1 = imread(p1)
@@ -359,8 +368,10 @@ if __name__ == '__main__':
         fea1 = t2c(process2(i1))
         fea2 = t2c(process2(i2))
 
-        fea1 = np.array(fea1)
-        fea2 = np.array(fea2)
+        fea1 = np.array(fea1,dtype=np.float32)
+        # print(type(fea1))
+        fea2 = np.array(fea2,dtype=np.float32)
+        # print()
 
         # print(fea1.shape)
         # print(fea2.shape)
@@ -368,9 +379,11 @@ if __name__ == '__main__':
 
 
         r11 = fea1[int(0.25*len(fea1)):int(0.75*len(fea1))]
-        print(r11.shape)
+        # print(type(r11))
         r22 = fea2[int(0.25*len(fea2)):int(0.75*len(fea2))]
-        print(r22.shape)
+        # print(r22.shape)
+        # print(r11.shape)
+        # print(r22.shape)
 
         res = cv2.matchTemplate(fea1, r22, cv2.TM_CCOEFF_NORMED)
         # res = cv2.matchTemplate(fea1[int(0.15*len(fea1)):int(0.85*len(fea1))], r22, cv2.TM_CCOEFF_NORMED)

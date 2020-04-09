@@ -232,6 +232,9 @@ def process2(im):
     # im = local_threshold(im)
     # fea1 =  process2(i1)
     # fea2 =  process2(i2)
+    imgIn = np.array(imgIn,dtype=np.uint8)*255
+
+    imgIn = getMaxRegion(imgIn)
 
     cv2.imwrite("out33333.png", 255*imgIn)
     fe = imgIn * im 
@@ -288,7 +291,10 @@ if __name__ == '__main__':
         fea2 = process2(i2)
 
         r11 = fea1[int(0.25*len(fea1)):int(0.75*len(fea1))]
+
+        print(type(r11))
         r22 = fea2[int(0.25*len(fea2)):int(0.75*len(fea2))]
+        print(r22.shape)
 
         res = cv2.matchTemplate(fea1[int(0.15*len(fea1)):int(0.85*len(fea1))], r22, cv2.TM_CCOEFF_NORMED)
         min_val1, max_val, _, _ = cv2.minMaxLoc(res)
