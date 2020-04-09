@@ -8,6 +8,7 @@ import cv2
 from skimage.io import imsave,imread
 import copy
 import math
+import removeHighlight
 
 
 def imFill(img):
@@ -22,11 +23,11 @@ def imFill(img):
     # Invert floodfilled image
     im_floodfill_inv = cv2.bitwise_not(im_floodfill)
 
-    cv2.imwrite("out22222.png",im_floodfill_inv)
+    # cv2.imwrite("out22222.png",im_floodfill_inv)
     # Combine the two images to get the foreground.
     im_out = img + im_floodfill_inv
 
-    cv2.imwrite("out33333.png",im_out)
+    # cv2.imwrite("out33333.png",im_out)
 
 
 #不好用，运算时间太长
@@ -206,6 +207,8 @@ def process(imgPath):
     # print(np.max(img))
     # img[:,int(0.5*img.shape[1])] = 1
     lcc = getMaxRegion(img)
+    
+
     # lcc = np.array(lcc,dtype=np.uint8)
 
     wL = np.sum(lcc,axis=1,dtype=np.float32)
@@ -223,32 +226,30 @@ def process(imgPath):
 
 def process2(im):
     imgShape = im.shape 
-
-    # im = cv2.imread(imgPath)
-    im = his(im)
-    if imgShape[0]>imgShape[1]:
+    lcc2 = removeHighlight.remove(im)
+      
+    if imgShape[0]<imgShape[1]:
         pass 
     else:
-        trans_img = cv2.transpose(im)
-        im = cv2.flip(trans_img, 1)
+        trans_img ,trans_img2= cv2.transpose(im),cv2.transpose(lcc2)
+        im,lcc2 = cv2.flip(trans_img, 1),cv2.flip(trans_img2, 1)
+    
+    rect = cv2.boundingRect(lcc2)
+
+
+    
+    im = his(im)
     im = cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
     imgIn = im / 255.0
     imgIn = xdog(imgIn, binarize=True,k=20)
-    # im = local_threshold(im)
-    # fea1 =  process2(i1)
-    # fea2 =  process2(i2)
-
-
-    ###################################################################################
-    # imgIn = np.array(imgIn,dtype=np.uint8)*255
-    # imgIn = getMaxRegion(imgIn)
-    ###################################################################################
-
-    cv2.imwrite("out33333.png", 255*imgIn)
+    
+    
     fe = imgIn * im 
+    cv2.rectangle(im,(rect[0],rect[1]),(rect[0]+rect[2],rect[1]+rect[3]),(0,255,0),2)
+    cv2.imwrite("out33333.png", im)
     # fea2 = np.sum(fe,axis=1,dtype=np.float32)
     # print(len(fea2))
-    return fe
+    return fe,rect[0],rect[2]
 
 
 def smooth(a,WSZ = 3):
@@ -285,16 +286,20 @@ def flip180(arr):
 
 
 
-def t2c(img):
+def t2c(*args):
+    # print(len(args[0]))
+    img = args[0][0]
+    start = args[0][1]
+    width = args[0][2]
     imgShape = img.shape
     if imgShape[0]>imgShape[1]:
         trans_img = cv2.transpose(img)
         img = cv2.flip(trans_img, 1)
         imgShape = img.shape
-        
-    img = img[:,int(0.2*imgShape[1]):int(0.8*imgShape[1])]
-    # print(imgShape)
-    # print("=============")
+
+    if start!=-1:  
+        img = img[:,start:start+width]
+ 
     imgShape = img.shape
     
     h = imgShape[0]*0.5
@@ -345,14 +350,14 @@ def t2c(img):
 
 if __name__ == '__main__':
 
-    # p2 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0001.jpg"
-    # p1 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0002.jpg"
+    # p2 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0006.jpg"
+    # p1 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0005.jpg"
 
-    # p2 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0002.jpg"
-    # p1 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0004.jpg"
+    p2 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0001.jpg"
+    p1 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0002.jpg"
 
-    p1 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0001.jpg"
-    p2 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0002.jpg"
+    # p1 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0001.jpg"
+    # p2 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0002.jpg"
 
 
     # import cv2
@@ -361,9 +366,9 @@ if __name__ == '__main__':
     i1 = imread(p1)
     i2 = imread(p2)
 
-    mode = 3
+    mode = 2
 
-    if mode == 3:
+    if mode == 2:
 
         fea1 = t2c(process2(i1))
         fea2 = t2c(process2(i2))
