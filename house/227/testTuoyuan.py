@@ -252,6 +252,34 @@ def process2(im):
     return fe,rect[0],rect[2]
 
 
+def process3(im):
+    imgShape = im.shape 
+    lcc2 = removeHighlight.remove(im)
+      
+    if imgShape[0]<imgShape[1]:
+        pass 
+    else:
+        trans_img ,trans_img2= cv2.transpose(im),cv2.transpose(lcc2)
+        im,lcc2 = cv2.flip(trans_img, 1),cv2.flip(trans_img2, 1)
+    
+    rect = cv2.boundingRect(lcc2)
+
+    im = im[:,rect[0]:rect[0]+rect[2]]
+    
+    im = his(im)
+    im = cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
+    imgIn = im / 255.0
+    imgIn = xdog(imgIn, binarize=True,k=20)
+    
+    
+    fe = imgIn * im 
+    # cv2.rectangle(im,(rect[0],rect[1]),(rect[0]+rect[2],rect[1]+rect[3]),(0,255,0),2)
+    cv2.imwrite("out33333.png", im*imgIn)
+    # fea2 = np.sum(fe,axis=1,dtype=np.float32)
+    # print(len(fea2))
+    return fe, -1, -1
+
+
 def smooth(a,WSZ = 3):
   # a:原始数据，NumPy 1-D array containing the data to be smoothed
   # 必须是1-D的，如果不是，请使用 np.ravel()或者np.squeeze()转化 
@@ -353,11 +381,11 @@ if __name__ == '__main__':
     # p2 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0006.jpg"
     # p1 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0005.jpg"
 
-    p2 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0001.jpg"
-    p1 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0002.jpg"
+    # p2 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0001.jpg"
+    # p1 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0002.jpg"
 
-    # p1 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0001.jpg"
-    # p2 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0002.jpg"
+    p1 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0001.jpg"
+    p2 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0004.jpg"
 
 
     # import cv2
@@ -372,6 +400,9 @@ if __name__ == '__main__':
 
         fea1 = t2c(process2(i1))
         fea2 = t2c(process2(i2))
+
+        # fea1 = t2c(process3(i1))
+        # fea2 = t2c(process3(i2))
 
         fea1 = np.array(fea1,dtype=np.float32)
         # print(type(fea1))
