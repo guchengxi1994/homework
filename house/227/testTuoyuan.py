@@ -115,9 +115,19 @@ def xdog(im, gamma=0.98, phi=200, eps=-0.1, k=1.6, sigma=0.8, binarize=False):
     imdiff = (imdiff < eps) * 1.0  + (imdiff >= eps) * (1.0 + np.tanh(phi * imdiff))
     imdiff -= imdiff.min()
     imdiff /= imdiff.max()
-    if binarize:
-        th = threshold_otsu(imdiff)
-        imdiff = imdiff >= th
+
+    # imgf = np.array(imdiff*255,dtype=np.uint8)
+    # cv2.imwrite("out0000.jpg",imgf)
+
+    immax = np.max(imdiff)
+
+    imdiff[imdiff<0.8*immax] = 0
+    imdiff[imdiff!=0] = 1
+
+
+    # if binarize:
+    #     th = threshold_otsu(imdiff)
+    #     imdiff = imdiff >= th
     imdiff = imdiff.astype('float32')
     
     # imgShape = imdiff.shape
@@ -181,6 +191,8 @@ def his(image):
 
 
 def getProperRegion(img):
+    thres1 = 0.2
+    thres2 = 0.8
     img = np.array(img,dtype=np.uint8)
     _, labels, stats, centroids = cv2.connectedComponentsWithStats(img)
     x1,y1 = stats.shape
@@ -194,6 +206,12 @@ def getProperRegion(img):
     # lab = 0
     for i in range(1,x1):
         if stats[i][4]<100  :
+            labels[labels == i] = 0
+        
+        if stats[i][0] + stats[i][2]>y*thres1 and stats[i][0] + stats[i][2]<y*thres2 and \
+            stats[i][1] + stats[i][3]>x*thres1 and stats[i][1] + stats[i][3]<x*thres2 and \
+            stats[i][0] >y*thres1 and stats[i][0] <y*thres2 and \
+            stats[i][1] >x*thres1 and stats[i][1] <x*thres2 :
             labels[labels == i] = 0
     #         maxArea = stats[i][4]
     #         lab = i 
@@ -270,6 +288,7 @@ def process2(im):
 
     
     im = his(im)
+    cv2.imwrite("out111111.png", im)
     im = cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
     imgShape = im.shape
     imgIn = im / 255.0
@@ -284,6 +303,7 @@ def process2(im):
     fe = imgIn * im 
     cv2.rectangle(im,(rect[0],rect[1]),(rect[0]+rect[2],rect[1]+rect[3]),(0,255,0),2)
     cv2.imwrite("out33333.png", imgIn*255)
+    cv2.imwrite("out44444.png", im)
     # fea2 = np.sum(fe,axis=1,dtype=np.float32)
     # print(len(fea2))
     # print(imgShape[1])
@@ -311,6 +331,8 @@ def process3(im):
     im = im[:,rect[0]:rect[0]+rect[2]]
     
     im = his(im)
+
+    cv2.imwrite("out111111.png", im)
     im = cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
     imgShape = im.shape 
     imgIn = im / 255.0
