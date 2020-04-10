@@ -180,6 +180,31 @@ def his(image):
     return image
 
 
+def getProperRegion(img):
+    img = np.array(img,dtype=np.uint8)
+    _, labels, stats, centroids = cv2.connectedComponentsWithStats(img)
+    x1,y1 = stats.shape
+    x,y = img.shape
+    # print(stats.shape)
+
+    # for i in (1,x+1):
+    #     stats1 = stats[1:,:]
+    #     print(stats1)
+    # maxArea = 0
+    # lab = 0
+    for i in range(1,x1):
+        if stats[i][4]<100  :
+            labels[labels == i] = 0
+    #         maxArea = stats[i][4]
+    #         lab = i 
+    
+    # labels[labels!=lab] = 0
+
+    labels[labels!=0] = 1
+
+    return labels
+
+
 
 def process(imgPath):
     im = imread(imgPath)
@@ -224,6 +249,11 @@ def process(imgPath):
     # return lcc,w,nomarlLize(fea2)
 
 
+thres1,thres2 = 0.4,0.6
+thres3,thres4 = 0.2,0.8
+
+
+
 def process2(im):
     imgShape = im.shape 
     lcc2 = removeHighlight.remove(im)
@@ -233,6 +263,7 @@ def process2(im):
     else:
         trans_img ,trans_img2= cv2.transpose(im),cv2.transpose(lcc2)
         im,lcc2 = cv2.flip(trans_img, 1),cv2.flip(trans_img2, 1)
+         
     
     rect = cv2.boundingRect(lcc2)
 
@@ -240,17 +271,29 @@ def process2(im):
     
     im = his(im)
     im = cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
+    imgShape = im.shape
     imgIn = im / 255.0
     imgIn = xdog(imgIn, binarize=True,k=20)
+
+    imgIn = getProperRegion(imgIn)
+
+    imgIn[int(thres1*imgShape[0]):int(thres2*imgShape[0]), \
+        int(thres3*imgShape[1]):int(thres4*imgShape[1])] = 0
     
     
     fe = imgIn * im 
     cv2.rectangle(im,(rect[0],rect[1]),(rect[0]+rect[2],rect[1]+rect[3]),(0,255,0),2)
-    cv2.imwrite("out33333.png", im)
+    cv2.imwrite("out33333.png", imgIn*255)
     # fea2 = np.sum(fe,axis=1,dtype=np.float32)
     # print(len(fea2))
-    return fe,rect[0],rect[2]
-
+    # print(imgShape[1])
+    if rect[2] != 0:
+        if rect[2]<0.5*imgShape[1]:
+            return fe,-1,-1
+        else:
+            return fe,rect[0],rect[2] 
+    else:
+        return fe,-1,-1
 
 def process3(im):
     imgShape = im.shape 
@@ -261,6 +304,7 @@ def process3(im):
     else:
         trans_img ,trans_img2= cv2.transpose(im),cv2.transpose(lcc2)
         im,lcc2 = cv2.flip(trans_img, 1),cv2.flip(trans_img2, 1)
+        
     
     rect = cv2.boundingRect(lcc2)
 
@@ -268,8 +312,13 @@ def process3(im):
     
     im = his(im)
     im = cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
+    imgShape = im.shape 
     imgIn = im / 255.0
     imgIn = xdog(imgIn, binarize=True,k=20)
+
+    # imgIn = getProperRegion(imgIn)
+    imgIn[int(thres1*imgShape[0]):int(thres2*imgShape[0]), \
+        int(thres3*imgShape[1]):int(thres4*imgShape[1])] = 0
     
     
     fe = imgIn * im 
@@ -317,28 +366,42 @@ def flip180(arr):
 def t2c(*args):
     # print(len(args[0]))
     img = args[0][0]
+    # print(img.shape)
     start = args[0][1]
+    # print(start)
     width = args[0][2]
+    # print(width)
     imgShape = img.shape
     if imgShape[0]>imgShape[1]:
         trans_img = cv2.transpose(img)
         img = cv2.flip(trans_img, 1)
-        imgShape = img.shape
-
+        # imgShape = img.shape
+    imgShape = img.shape
     if start!=-1:  
         img = img[:,start:start+width]
+    else:
+        img = img[:,int(0.15*imgShape[1]):int(0.85*imgShape[1])]
  
     imgShape = img.shape
+    # print(img.shape)
     
     h = imgShape[0]*0.5
-    # print(hh)
+    # print(h)
     r = 0.5*imgShape[1]
+    
     # rr = 0.5*r
     # # print(r)
     # h =  r
 
     t = math.sqrt(r**2/(0.75*h**2+0.25*r**2))
     # print(t)
+
+
+
+    # img[int(0.4*imgShape[0]):int(0.6*imgShape[0]), \
+    #     int(0.3*imgShape[1]):int(0.7*imgShape[1])] = 0
+
+
     
     upper = img[0:int(0.5*imgShape[0]),:]
     lower = img[int(0.5*imgShape[0]):,:]
@@ -381,11 +444,14 @@ if __name__ == '__main__':
     # p2 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0006.jpg"
     # p1 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0005.jpg"
 
-    # p2 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0001.jpg"
-    # p1 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0002.jpg"
+    # p1 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0001.jpg"
+    # p2 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0002.jpg"
 
-    p1 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0001.jpg"
-    p2 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0004.jpg"
+    p1 = "D:\\getWeld\\pipeweld\\pipelineCode-50-P50216-2C2S1R-ST042-weldingCode-G1520_0005.jpg"
+    p2 = "D:\\getWeld\\pipeweld\\pipelineCode-50-P50205-3C1S1R-ST041-weldingCode-54G30_0005.jpg"
+
+    # p1 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0001.jpg"
+    # p2 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0004.jpg"
 
 
     # import cv2
