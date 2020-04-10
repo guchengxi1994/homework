@@ -208,15 +208,12 @@ def getProperRegion(img):
         if stats[i][4]<100  :
             labels[labels == i] = 0
         
-        if stats[i][0] + stats[i][2]>y*thres1 and stats[i][0] + stats[i][2]<y*thres2 and \
-            stats[i][1] + stats[i][3]>x*thres1 and stats[i][1] + stats[i][3]<x*thres2 and \
-            stats[i][0] >y*thres1 and stats[i][0] <y*thres2 and \
-            stats[i][1] >x*thres1 and stats[i][1] <x*thres2 :
-            labels[labels == i] = 0
-    #         maxArea = stats[i][4]
-    #         lab = i 
-    
-    # labels[labels!=lab] = 0
+        # if stats[i][0] + stats[i][2]>y*thres1 and stats[i][0] + stats[i][2]<y*thres2 and \
+        #     stats[i][1] + stats[i][3]>x*thres1 and stats[i][1] + stats[i][3]<x*thres2 and \
+        #     stats[i][0] >y*thres1 and stats[i][0] <y*thres2 and \
+        #     stats[i][1] >x*thres1 and stats[i][1] <x*thres2 :
+        #     labels[labels == i] = 0
+
 
     labels[labels!=0] = 1
 
