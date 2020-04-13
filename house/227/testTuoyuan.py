@@ -295,6 +295,8 @@ def process2(im):
 
     imgIn[int(thres1*imgShape[0]):int(thres2*imgShape[0]), \
         int(thres3*imgShape[1]):int(thres4*imgShape[1])] = 0
+
+    # imgIn = getProperRegion(imgIn)
     
     
     fe = imgIn * im 
@@ -466,11 +468,11 @@ if __name__ == '__main__':
     # p1 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0001.jpg"
     # p2 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0002.jpg"
 
-    p2 = "D:\\getWeld\\pipeweld\\pipelineCode-50-P50216-2C2S1R-ST042-weldingCode-G1520_0005.jpg"
-    p1 = "D:\\getWeld\\pipeweld\\pipelineCode-50-P50205-3C1S1R-ST041-weldingCode-54G30_0005.jpg"
+    # p1 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0001.jpg"
+    # p2 = "D:\\getWeld\\pipeweld\\pipelineCode-576-weldingCode-1_0002.jpg"
 
-    # p2 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0001.jpg"
-    # p1 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0004.jpg"
+    p2 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0003.jpg"
+    p1 = "D:\\getWeld\\pipeweld\\pipelineCode-51X51-3-weldingCode-1_0002.jpg"
 
 
     # import cv2
@@ -499,23 +501,42 @@ if __name__ == '__main__':
 
 
 
-        r11 = fea1[int(0.25*len(fea1)):int(0.75*len(fea1))]
+        r11 = fea1[int(0.1*len(fea1)):int(0.4*len(fea1))]
+        r12 = fea1[int(0.6*len(fea1)):int(0.9*len(fea1))]
         # print(type(r11))
-        r22 = fea2[int(0.25*len(fea2)):int(0.75*len(fea2))]
+        r21 = fea2[int(0.1*len(fea2)):int(0.4*len(fea2))]
+        r22 = fea2[int(0.6*len(fea2)):int(0.9*len(fea2))]
         # print(r22.shape)
         # print(r11.shape)
         # print(r22.shape)
 
+        res = cv2.matchTemplate(fea1, r21, cv2.TM_CCOEFF_NORMED)
+        # res = cv2.matchTemplate(fea1[int(0.15*len(fea1)):int(0.85*len(fea1))], r22, cv2.TM_CCOEFF_NORMED)
+        _, max_val1, _, max_loc1 = cv2.minMaxLoc(res)
+
         res = cv2.matchTemplate(fea1, r22, cv2.TM_CCOEFF_NORMED)
         # res = cv2.matchTemplate(fea1[int(0.15*len(fea1)):int(0.85*len(fea1))], r22, cv2.TM_CCOEFF_NORMED)
-        min_val1, max_val, _, _ = cv2.minMaxLoc(res)
+        _, max_val2, _, max_loc2 = cv2.minMaxLoc(res)
 
         # res2 = cv2.matchTemplate(fea2[int(0.15*len(fea2)):int(0.85*len(fea2))], r11, cv2.TM_CCOEFF_NORMED)
         res2 = cv2.matchTemplate(fea2, r11, cv2.TM_CCOEFF_NORMED)
-        min_val2, max_val2, _, _ = cv2.minMaxLoc(res2)
+        _, max_val3, _, max_loc3 = cv2.minMaxLoc(res2)
+
+        res2 = cv2.matchTemplate(fea2, r12, cv2.TM_CCOEFF_NORMED)
+        _, max_val4, _, max_loc4 = cv2.minMaxLoc(res2)
 
 
-        print(0.5*(max_val+max_val2))
+        # print(0.5*(max_val+max_val2))
+
+        print(max_val1)
+        print(max_val2)
+        print(max_val3)
+        print(max_val4)
+        print("=================================================")
+        print(0.5*(max(max_val1,max_val2)+max(max_val3,max_val4)))
+
+        # print(max_loc1)
+        # print(max_loc2)
 
     
         
