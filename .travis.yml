@@ -1,0 +1,5 @@
+language: python 
+install: 
+        - pip install -r ./house/requirements.txt
+script: 
+        python ./house/227/testTuoyuan.py
