@@ -1,5 +1,5 @@
 language: python 
-install: 
-        - pip install -r ./house/requirements.txt
+# install: 
+#         - pip install -r ./house/requirements.txt
 script: 
-        python ./house/227/testTuoyuan.py
+        python ./MyList/MyList.py
