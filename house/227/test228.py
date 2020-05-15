@@ -335,8 +335,8 @@ def nomarlLize(r):
 
 
 if __name__ == '__main__':
-    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_498-F-125-12-0000.jpg'
-    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_500-F-126-12-0000.jpg'
+    p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_498-F-125-12-0000.jpg'
+    p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_500-F-126-12-0000.jpg'
 
     # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_669-H-112-22-0000.jpg'
     # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_672-H-113-22-0000.jpg'
@@ -353,8 +353,8 @@ if __name__ == '__main__':
     # p1 = 'D:\\getWeld\\results\\1146-B-53-16-0000.jpg'
     # p2 = 'D:\\getWeld\\results\\1068-B-4-16-0000.jpg'
 
-    p2 = "D:\\getWeld\\pipeweld\\pipelineCode-150-LD22002-B2A-N131-weldingCode-G11_0003.jpg"
-    p1 = "D:\\getWeld\\pipeweld\\pipelineCode-150-LD22002-B2A-N131-weldingCode-G12_0005.jpg"
+    # p2 = "D:\\getWeld\\pipeweld\\pipelineCode-150-LD22002-B2A-N131-weldingCode-G11_0003.jpg"
+    # p1 = "D:\\getWeld\\pipeweld\\pipelineCode-150-LD22002-B2A-N131-weldingCode-G12_0005.jpg"
 
 
     import cv2
