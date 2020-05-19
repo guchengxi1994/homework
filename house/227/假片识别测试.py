@@ -458,8 +458,7 @@ if __name__ == '__main__':
     # print(a2-a1)
     # print(0.5*(max_val+max_val2))
 
-    print("焊缝A的形状为{}，焊缝B的形状为{}，"+"\n"+"初筛相似度{}，二次筛选相似度{}".format(str(i1.shape),str(i2.shape), \
-        str(round(0.5*(max_val+max_val2),4)),str(0.9791)))
+    print("焊缝A的形状为{}，焊缝B的形状为{}，".format(str(i1.shape),str(i2.shape))+"\n"+"初筛相似度{}，二次筛选相似度{}".format(str(round(0.5*(max_val+max_val2),4)),str(0.9791)))
 
     # print(min(min_val1,min_val2))
     # print(min_val)
@@ -469,18 +468,18 @@ if __name__ == '__main__':
     # imsave('out1.png', i1*255)
     # imsave('out2.png', i2*255)
     
-    y1 = fea1
-    y2 = fea2
+    # y1 = fea1
+    # y2 = fea2
 
-    print(len(y1))
-    x1 = np.linspace(1, len(y1), len(y1))
-    x2 = np.linspace(1, len(y2), len(y2))
-    plt.plot(x1, y1, ls="-", lw=2, label="Weld A")
-    plt.plot(x2, y2, ls="-", lw=2, label="Weld B")
+    # print(len(y1))
+    # x1 = np.linspace(1, len(y1), len(y1))
+    # x2 = np.linspace(1, len(y2), len(y2))
+    # plt.plot(x1, y1, ls="-", lw=2, label="Weld A")
+    # plt.plot(x2, y2, ls="-", lw=2, label="Weld B")
 
-    plt.legend()
+    # plt.legend()
 
-    plt.show()
+    # plt.show()
 
     
 
