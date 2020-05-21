@@ -307,13 +307,14 @@ def process2(im):
         trans_img = cv2.transpose(im)
         im = cv2.flip(trans_img, 1)
     im = cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
+
     imgIn = im / 255.0
     imgIn = xdog(imgIn, binarize=True,k=20)
-    # im = local_threshold(im)
-    # fea1 =  process2(i1)
-    # fea2 =  process2(i2)
 
-    cv2.imwrite("out33333.png", 255*imgIn)
+
+    imgIn = me(im,mask=imgIn)
+
+    cv2.imwrite("out6666.png", 255*imgIn)
     fe = imgIn * im 
     fea2 = np.sum(fe,axis=1,dtype=np.float32)
     # print(len(fea2))
@@ -345,21 +346,61 @@ def nomarlLize(r):
 
     # return(r)
 
+def me(image,mask):
+    shape = image.shape
+    if shape[0]>shape[1]:
+        pass
+    else:
+        trans_img = cv2.transpose(image)
+        image = cv2.flip(trans_img, 1)
+        shape = image.shape
+    
+    thres = np.mean(image,axis=1).reshape((shape[0],1))
+
+    # kernel = np.ones((5,1),dtype=np.float32)/5
+    # thres = cv2.filter2D(thres,-1,kernel)
+
+
+    thres_mat = np.tile(thres,shape[1])
+
+    
+
+
+
+    image_thres = image - thres_mat
+
+    image_thres[image_thres>0] = 1
+    image_thres[image_thres!=1] = 0
+    
+    return image_thres * mask
+
+
+
 
 
 
 if __name__ == '__main__':
+    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\XQⅡ-BK041+M127-FP_14.jpg'
+    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\XQⅢ-BJ018+M004-FP_06.jpg'
+
+    # p2 = 'D:\\getWeld\\CJSTS\\XQⅢ-AD030+M080\\XQⅢ-AD030+M080_01.jpg'
+    # p1 = 'D:\\getWeld\\CJSTS\\XQⅢ-AD030+M080-FP\\XQⅢ-AD030+M080-FP_02.jpg'
+
     p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_498-F-125-12-0000.jpg'
-    p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_500-F-126-12-0000.jpg'
+    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_500-F-126-12-0000.jpg'
+
+    p2 = 'D:\\testALg\\homework\\house\\227\\weld\\o1.jpg'
+    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\o2.jpg'
+
 
     # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\XQⅡ-BK043+1+M005-FP_06.jpg'
     # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\XQⅢ-BJ018+M004-FP_06.jpg'
 
-    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_669-H-112-22-0000.jpg'
-    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_672-H-113-22-0000.jpg'
+    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_669-H-112-22-0000.jpg'
+    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_672-H-113-22-0000.jpg'
 
-    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1149-B-55-0-0000.jpg'
-    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1150-B-56-14-0000.jpg'
+    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1149-B-55-0-0000.jpg'
+    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1150-B-56-14-0000.jpg'
 
     # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\w1.jpg'
     # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\w2.jpg'
@@ -367,8 +408,18 @@ if __name__ == '__main__':
     # p1 = 'D:\\getWeld\\results\\uploadTime-15735481088070000.jpg'
     # p2 = 'D:\\getWeld\\results\\uploadTime-15735477899070003.jpg'
 
-    # p1 = 'D:\\getWeld\\results\\1146-B-53-16-0000.jpg'
-    # p2 = 'D:\\getWeld\\results\\1068-B-4-16-0000.jpg'
+    # p1 = 'D:\\getWeld\\results\\pipelineCode-150-LD22002-B2A-N131-weldingCode-G33_0003.jpg'
+    # p2 = 'D:\\getWeld\\results\\pipelineCode-150-LD22002-B2A-N131-weldingCode-G33A_0004.jpg'
+
+    # p1 = "D:\\getWeld\\results\\457-G-160-8-0000.jpg"
+    # p2 = "D:\\getWeld\\results\\516-F-133-10-0000.jpg"
+
+    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\XQⅡ-BK043+1+M005-FP_06.jpg'
+    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\XQⅢ-BJ018+M004-FP_06.jpg'
+
+    # p2 = 'D:\\getWeld\\results\\1146-B-53-16-0000.jpg'
+    # p1 = 'D:\\getWeld\\results\\1068-B-4-0-0000.jpg'
+    # p1 = 'D:\\getWeld\\results\\1068-B-4-16-0000.jpg'
 
     # p2 = "D:\\getWeld\\pipeweld\\pipelineCode-150-LD22002-B2A-N131-weldingCode-G11_0003.jpg"
     # p1 = "D:\\getWeld\\pipeweld\\pipelineCode-150-LD22002-B2A-N131-weldingCode-G12_0005.jpg"
@@ -378,10 +429,16 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
 
     i1 = imread(p1)
+    # i1 = cv2.resize(i1,(i1.shape[1]*2,i1.shape[0]*2))
+    # print(i1.shape)
     i2 = imread(p2)
+    # print(i2.shape)
 
-    fea1 = process3(i1)
-    fea2 = process3(i2)
+    # i1 = i1 + 30
+    # i2 = i2 - 30
+
+    fea1 = process2(i1) 
+    fea2 = process2(i2) 
 
     #######################
     # params = np.load("D:\\getWeld\\features_LONG.npy",allow_pickle=True)
@@ -439,9 +496,14 @@ if __name__ == '__main__':
     # min_val2, max_val2, _, _ = cv2.minMaxLoc(res2)
     # print(0.5*(max_val+max_val2))
 
+
+
     
     r11 = fea1[int(0.25*len(fea1)):int(0.75*len(fea1))]
     r22 = fea2[int(0.25*len(fea2)):int(0.75*len(fea2))]
+
+    print(np.mean(r11))
+    print(0.5*len(r11))
 
     # r11 = np.flipud(r11)   # test  2020.5.18
 
@@ -456,10 +518,10 @@ if __name__ == '__main__':
     # d, _,_,_ = accelerated_dtw(r11, r22, dist='euclidean')
 
     # print(a2-a1)
-    # print(0.5*(max_val+max_val2))
+    print(0.5*(max_val+max_val2))
 
-    print("焊缝A的形状为{}，焊缝B的形状为{}，"+"\n"+"初筛相似度{}，二次筛选相似度{}".format(str(i1.shape),str(i2.shape), \
-        str(round(0.5*(max_val+max_val2),4)),str(0.9791)))
+    # print("焊缝A的形状为{}，焊缝B的形状为{}，"+"\n"+"初筛相似度{}，二次筛选相似度{}".format(str(i1.shape),str(i2.shape), \
+    #     str(round(0.5*(max_val+max_val2),4)),str(0.9791)))
 
     # print(min(min_val1,min_val2))
     # print(min_val)
