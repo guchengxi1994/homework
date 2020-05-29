@@ -227,17 +227,21 @@ def local_threshold(image):
 
 
 def his(image):
-    b, g, r = cv2.split(image)
-    # 创建局部直方图均衡化
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(5, 5))
-    # 对每一个通道进行局部直方图均衡化
-    b = clahe.apply(b)
-    g = clahe.apply(g)
-    r = clahe.apply(r)
-    # 合并处理后的三通道 成为处理后的图
-    image = cv2.merge([b, g, r])
+    if len(image.shape) == 3:
+        b, g, r = cv2.split(image)
+        # 创建局部直方图均衡化
+        
+        # 对每一个通道进行局部直方图均衡化
+        b = clahe.apply(b)
+        g = clahe.apply(g)
+        r = clahe.apply(r)
+        # 合并处理后的三通道 成为处理后的图
+        image = cv2.merge([b, g, r])
 
-    return image
+        return image
+    else:
+        return cv2.merge([clahe.apply(image),clahe.apply(image),clahe.apply(image)])
 
 
 def process3(im):
@@ -256,7 +260,11 @@ def process3(im):
 
 
 def process(imgPath):
-    im = imread(imgPath)
+    if isinstance(imgPath,str):
+        im = imread(imgPath)
+    else:
+        im = imgPath
+    # im = 
     im = his(im)
     im = cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
 
@@ -386,10 +394,10 @@ if __name__ == '__main__':
     # p2 = 'D:\\getWeld\\CJSTS\\XQⅢ-AD030+M080\\XQⅢ-AD030+M080_01.jpg'
     # p1 = 'D:\\getWeld\\CJSTS\\XQⅢ-AD030+M080-FP\\XQⅢ-AD030+M080-FP_02.jpg'
 
-    p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_498-F-125-12-0000.jpg'
+    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_498-F-125-12-0000.jpg'
     # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_500-F-126-12-0000.jpg'
 
-    p2 = 'D:\\testALg\\homework\\house\\227\\weld\\o1.jpg'
+    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\o1.jpg'
     # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\o2.jpg'
 
 
@@ -411,8 +419,17 @@ if __name__ == '__main__':
     # p1 = 'D:\\getWeld\\results\\pipelineCode-150-LD22002-B2A-N131-weldingCode-G33_0003.jpg'
     # p2 = 'D:\\getWeld\\results\\pipelineCode-150-LD22002-B2A-N131-weldingCode-G33A_0004.jpg'
 
-    # p1 = "D:\\getWeld\\results\\457-G-160-8-0000.jpg"
-    # p2 = "D:\\getWeld\\results\\516-F-133-10-0000.jpg"
+    # p1 = "D:\\getPianwei\\origin\\pipelineCode-100-P21511-B1D-P131-weldingCode-5_0003.jpg"
+    # p2 = "D:\\getPianwei\\origin\\pipelineCode-150-LD22002-B2A-N131-weldingCode-G7_0006.jpg"
+
+    # p1 = "D:\\getWeld\\results2\\pipelineCode-100-P21511-B1D-P131-weldingCode-5_0003.jpg"
+    # p2 = "D:\\getWeld\\results2\\pipelineCode-150-LD22002-B2A-N131-weldingCode-G7_0006.jpg"
+
+    # p1 = 'D:\\getWeld\\CJSSSSSSSSS\\XQⅢ-AF001+M002-W-FP\\XQⅢ-AF001+M002-W-FP_01.jpg'
+    # p2 = 'D:\\getWeld\\CJSSSSSSSSS\\XQⅢ-AF001+M002-W-FP\\XQⅢ-AF001+M002-W-FP_05.jpg'
+
+    p1 = 'D:\\getWeld\\CJSSSSSSSSS\XQⅢ-AF001+M006-W\\XQⅢ-AF001+M006-W_01.jpg'
+    p2 = 'D:\\getWeld\\CJSSSSSSSSS\\XQⅢ-AF001+M006-W\\XQⅢ-AF001+M006-W_02.jpg'
 
     # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\XQⅡ-BK043+1+M005-FP_06.jpg'
     # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\XQⅢ-BJ018+M004-FP_06.jpg'
@@ -503,7 +520,8 @@ if __name__ == '__main__':
     r22 = fea2[int(0.25*len(fea2)):int(0.75*len(fea2))]
 
     print(np.mean(r11))
-    print(0.5*len(r11))
+    print(np.mean(r22))
+    # print(0.5*len(r11))
 
     # r11 = np.flipud(r11)   # test  2020.5.18
 
