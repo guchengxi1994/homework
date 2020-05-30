@@ -1,3 +1,12 @@
+'''
+@lanhuage: python
+@Descripttion: 
+@version: beta
+@Author: xiaoshuyui
+@Date: 2020-02-25 09:37:06
+@LastEditors: xiaoshuyui
+@LastEditTime: 2020-05-21 09:52:52
+'''
 import numpy as np
 import cv2
 import pysift
@@ -7,8 +16,8 @@ logger = logging.getLogger(__name__)
 
 MIN_MATCH_COUNT = 10
 
-img1 = cv2.imread('D:\\homework\\homework\\house\\PythonSIFT-master\\box.png', 0)           # queryImage
-img2 = cv2.imread('D:\\homework\\homework\\house\\PythonSIFT-master\\box_in_scene.png', 0)  # trainImage
+img1 = cv2.imread('D:\\testALg\homework\\house\\PythonSIFT-master\\box.png', 0)           # queryImage
+img2 = cv2.imread('D:\\testALg\homework\\house\\PythonSIFT-master\\box_in_scene.png', 0)  # trainImage
 
 # Compute SIFT keypoints and descriptors
 kp1, des1 = pysift.computeKeypointsAndDescriptors(img1)

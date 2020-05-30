@@ -1,0 +1,1 @@
+D:\testALg\homework\rust\hello_cargo\target\debug\hello_cargo.exe: D:\testALg\homework\rust\hello_cargo\src\game.rs D:\testALg\homework\rust\hello_cargo\src\lib\mod.rs D:\testALg\homework\rust\hello_cargo\src\lib\mod429.rs D:\testALg\homework\rust\hello_cargo\src\main.rs
