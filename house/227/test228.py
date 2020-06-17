@@ -320,7 +320,11 @@ def process2(im):
     imgIn = xdog(imgIn, binarize=True,k=20)
 
 
-    imgIn = me(im,mask=imgIn)
+    # imgIn = me(im,mask=imgIn)
+
+    imgIn = getMaxRegion(imgIn.astype(np.uint8))
+
+    # imgIn = me(im,mask=imgIn)
 
     cv2.imwrite("out6666.png", 255*imgIn)
     fe = imgIn * im 
@@ -383,6 +387,18 @@ def me(image,mask):
     return image_thres * mask
 
 
+def tr(img):
+    shape = img.shape
+    if shape[0]<shape[1]:
+        pass
+    else:
+        trans_img = cv2.transpose(img)
+        img = cv2.flip(trans_img, 1)
+        shape = img.shape
+    
+    return img
+
+
 
 
 
@@ -396,6 +412,9 @@ if __name__ == '__main__':
 
     # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_498-F-125-12-0000.jpg'
     # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_500-F-126-12-0000.jpg'
+
+    # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1149-B-55-0-0000.jpg'
+    # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\extract_1150-B-56-14-0000.jpg'
 
     # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\o1.jpg'
     # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\o2.jpg'
@@ -428,8 +447,8 @@ if __name__ == '__main__':
     # p1 = 'D:\\getWeld\\CJSSSSSSSSS\\XQⅢ-AF001+M002-W-FP\\XQⅢ-AF001+M002-W-FP_01.jpg'
     # p2 = 'D:\\getWeld\\CJSSSSSSSSS\\XQⅢ-AF001+M002-W-FP\\XQⅢ-AF001+M002-W-FP_05.jpg'
 
-    p1 = 'D:\\getWeld\\CJSSSSSSSSS\XQⅢ-AF001+M006-W\\XQⅢ-AF001+M006-W_01.jpg'
-    p2 = 'D:\\getWeld\\CJSSSSSSSSS\\XQⅢ-AF001+M006-W\\XQⅢ-AF001+M006-W_02.jpg'
+    # p2 = 'D:\getWeld\CJSSSSSSSSS\YH-03-QB010+001-Y\\YH-03-QB010+001-Y_01.jpg'
+    # p1 = 'D:\getWeld\CJSSSSSSSSS\YH-03-QB010+001-Y\\YH-03-QB010+001-Y01R.jpg'
 
     # p2 = 'D:\\testALg\\homework\\house\\227\\weld\\XQⅡ-BK043+1+M005-FP_06.jpg'
     # p1 = 'D:\\testALg\\homework\\house\\227\\weld\\XQⅢ-BJ018+M004-FP_06.jpg'
@@ -437,6 +456,17 @@ if __name__ == '__main__':
     # p2 = 'D:\\getWeld\\results\\1146-B-53-16-0000.jpg'
     # p1 = 'D:\\getWeld\\results\\1068-B-4-0-0000.jpg'
     # p1 = 'D:\\getWeld\\results\\1068-B-4-16-0000.jpg'
+
+    # p1 = 'D:\\testALg\homework\house\\227\\weld2\\7.jpg'
+    # p2 = 'D:\\testALg\homework\house\\227\\weld2\\8.jpg'
+
+    # p1 = 'D:\getWeld\\test\\1129-B-42-16-0000.jpg'
+    # p2 = 'D:\getWeld\\test\\1122-B-38-22-0000.jpg'
+
+    p2 = 'D:\\getWeldPics\\test5\\XQⅡ-BK007-3+M006_01.jpg'
+    p1 = 'D:\\getWeldPics\\test5\\XQⅢ-AC088-M003（焊口同号）+XQⅢ-AC088-M003（焊口同号）_01.jpg'
+
+
 
     # p2 = "D:\\getWeld\\pipeweld\\pipelineCode-150-LD22002-B2A-N131-weldingCode-G11_0003.jpg"
     # p1 = "D:\\getWeld\\pipeweld\\pipelineCode-150-LD22002-B2A-N131-weldingCode-G12_0005.jpg"
@@ -446,22 +476,34 @@ if __name__ == '__main__':
     import matplotlib.pyplot as plt
 
     i1 = imread(p1)
-    # i1 = cv2.resize(i1,(i1.shape[1]*2,i1.shape[0]*2))
+    
     # print(i1.shape)
     i2 = imread(p2)
-    # print(i2.shape)
 
-    # i1 = i1 + 30
-    # i2 = i2 - 30
+
+
+    # # i1 = cv2.resize(i1,(i1.shape[1]*2,i1.shape[0]*2))
+
+    # i1 = cv2.cvtColor(i1,cv2.COLOR_BGR2GRAY)
+    # i2 = cv2.cvtColor(i2,cv2.COLOR_BGR2GRAY)
+
+    # i1 = tr(i1)
+    # i2 = tr(i2)
+
+
+
+    # fea1 = np.sum(i1,0).astype(np.float32)
+    # fea2 = np.sum(i2,0).astype(np.float32)
+
+
+
+
 
     fea1 = process2(i1) 
     fea2 = process2(i2) 
 
     #######################
-    # params = np.load("D:\\getWeld\\features_LONG.npy",allow_pickle=True)
-    # s = list(filter(lambda x:x.pipeline == "XQⅡ-BK043+1+M005-FP" ,params))
 
-    # f = s[0].features
 
 
 
