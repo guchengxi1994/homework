@@ -5,5 +5,5 @@ future==0.17.1
 six==1.12.0
 django_crispy_forms==1.9.0
 django_formtools==2.2
-httplib2==0.17.0
+httplib2==0.18.0
 django_reversion==3.0.7
